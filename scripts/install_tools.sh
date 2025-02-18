@@ -46,7 +46,8 @@ function install_kubectl {
   curl -LO https://dl.k8s.io/release/"$RECOMMENDED_KUBECTL_VERSION"/bin/linux/amd64/kubectl
   chmod +x kubectl
   mkdir -p ~/.local/bin
-  mv ./kubectl ~/.local/bin/kubectl
+  #mv ./kubectl ~/.local/bin/kubectl
+  mv ./kubectl /usr/local/bin/kubectl
   add_local_bin_to_path
   kubectl version --client
 }
@@ -86,7 +87,8 @@ function install_kustomize {
   curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash -s -- 5.2.1
   chmod +x kustomize
   mkdir -p ~/.local/bin
-  mv ./kustomize ~/.local/bin/kustomize
+  #mv ./kustomize ~/.local/bin/kustomize
+  mv ./kustomize /usr/local/bin/kustomize
   add_local_bin_to_path
   kustomize version
 }
@@ -124,7 +126,8 @@ if ! [[ $(which kind) ]]; then
     curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.14.0/kind-linux-amd64
     chmod +x ./kind
     mkdir -p ~/.local/bin
-    mv ./kind ~/.local/bin/kind
+    #mv ./kind ~/.local/bin/kind
+    mv ./kind /usr/local/bin/kind 
     add_local_bin_to_path
     kind version
 fi
