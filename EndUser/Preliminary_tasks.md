@@ -16,7 +16,7 @@ We forked the main branch of **`oss-mlops-platform`** into our newly created org
 - Define contribution workflows for the team.  
 - Synchronize changes from the upstream repository when needed.  
 
-
+## cPouta Installation
 
 Initially, I attempted to install the GitHub project locally on my Windows 11 machine. To do this, I needed to have WSL (Windows Subsystem for Linux) installed. Additionally, Docker Desktop must be installed on the Windows machine. Next, I copied the GitHub organization project, MLOPSAI. Using WSL, I was able to clone the repository to the Linux subsystem folder on my Windows machine with the `git clone` command. After that, I executed the installation using the command `sudo ./Setup.sh`.
 
