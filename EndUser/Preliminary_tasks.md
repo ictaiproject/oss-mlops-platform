@@ -84,68 +84,8 @@ Ensure the image name in the `Dockerfile` or Kubernetes deployment YAML is corre
 kubectl describe pod <pod-name>
 ```
 
-If it shows `ImagePullErr`, check the image name and repository.
 
-### Authenticate to Container Registry
 
-If using a private container registry, authenticate:
 
-```sh
-docker login -u <username> -p <password> <registry-url>
-```
 
-For Kubernetes, create a secret for authentication:
 
-```sh
-kubectl create secret docker-registry my-registry-secret \
-  --docker-server=<registry-url> \
-  --docker-username=<username> \
-  --docker-password=<password>
-```
-
-Attach the secret to your deployment:
-
-```yaml
-imagePullSecrets:
-  - name: my-registry-secret
-```
-
-### Check Network Issues
-
-Ensure your cluster has internet access to pull images:
-
-```sh
-kubectl get nodes -o wide
-ping <registry-url>
-```
-
-### Manually Pull the Image
-
-Try pulling the image manually on the node:
-
-```sh
-docker pull <image-name>
-```
-
-If successful, tag and push it to a working registry:
-
-```sh
-docker tag <image-name> my-registry/new-image-name
-docker push my-registry/new-image-name
-```
-
-Update your Kubernetes deployment to use the new image.
-
-## 5. Deploy and Test
-
-Redeploy the application:
-
-```sh
-kubectl apply -f deployment.yaml
-```
-
-Check pod status:
-
-```sh
-kubectl get pods
-kubectl logs <pod-name>
