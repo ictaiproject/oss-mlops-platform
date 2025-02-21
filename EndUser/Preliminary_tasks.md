@@ -86,6 +86,27 @@ kubectl describe pod <pod-name>
 
 
 
-
+Initial Attempt: Installing and Running MLOps Platform on macOSStep 1: Install Homebrew (Package Manager for macOS)/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"Step 2: Install Required Dependenciesbrew install git python3 kubectl kind dockerStep 3: Clone the MLOps Platform Repositorygit clone <repo-url>
+cd oss-mlops-platformStep 4: Install Python Virtual Environment and Required Packagespython3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txtStep 5: Start Docker and Verify InstallationEnsure Docker is running.
+Check Docker version:
+docker --versionStep 6: Create a Kind Kubernetes Clusterkind create cluster --name mlops-platformStep 7: Load the MLflow Docker Image into Kindkind load docker-image ghcr.io/oss-mlops-platform/mlflow_v2:0.0.1 --name mlops-platformStep 8: Deploy MLflow on Kuberneteskubectl apply -f mlflow-deployment.yamlStep 9: Verify Pods and Serviceskubectl get pods -n mlflow
+kubectl get svc -n mlflowIssue: ImagePullBackOff Error on Local InstallationDespite successfully setting up the environment, the Kubernetes deployment encountered the ImagePullBackOff error, preventing MLflow from running locally.
+Troubleshooting Attempts:1\ufe0f\u20e3 Checked Pod Logs:
+kubectl describe pod <POD_NAME>2\ufe0f\u20e3 Ensured Image Existed in Kind Cluster:
+docker images | grep mlflow_v23\ufe0f\u20e3 Forced Kubernetes to Use Local Image:
+kubectl patch deployment mlflow -p '{"spec": {"template": {"spec": {"containers": [{"name": "mlflow", "imagePullPolicy": "IfNotPresent"}]}}}}'4\ufe0f\u20e3 Restarted Kubelet:
+sudo systemctl restart kubeletFinal Decision: Move Installation to CSC with CpoutaSince local execution was unstable due to image pulling issues, Cpouta was chosen as the new deployment environment.
+2\ufe0f\u20e3 Setting Up MLOps on CSC with CpoutaStep 1: Connect to Cpouta Environmentssh <username>@csc.fiStep 2: Clone the MLOps Repository on CSCgit clone <repo-url>
+cd oss-mlops-platformStep 3: Install Dependenciesmodule load python
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txtStep 4: Set Up Kubernetes on Cpouta1\ufe0f\u20e3 Start a Kubernetes Cluster:
+kubectl create cluster --name mlops-platform2\ufe0f\u20e3 Verify Kubernetes Status:
+kubectl get nodesStep 5: Deploy MLflow on Cpoutakubectl apply -f mlflow-deployment.yamlStep 6: Verify Deploymentkubectl get pods -n mlflow
+kubectl get svc -n mlflow3\ufe0f\u20e3 Troubleshooting Issues on CpoutaIssue: Kubernetes Deployment Not FoundError from server (NotFound): deployments.apps "mlflow" not foundSolution:Check if the deployment exists:
+kubectl get deployments --all-namespacesIf missing, redeploy it:
+kubectl apply -f mlflow-deployment.yaml
 
 
