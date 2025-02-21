@@ -103,7 +103,7 @@ kubectl describe pod <pod-name>
 ```
 
 
-## 1️⃣ Initial Attempt: Installing and Running MLOps Platform on macOS
+## 1️ Initial Attempt: Installing and Running MLOps Platform on macOS
 
 ### **Step 1: Install Homebrew (Package Manager for macOS)**
 
@@ -171,25 +171,25 @@ Despite successfully setting up the environment, the Kubernetes deployment encou
 
 #### **Troubleshooting Attempts:**
 
-1️⃣ **Checked Pod Logs:**
+1️ **Checked Pod Logs:**
 
 ```sh
 kubectl describe pod <POD_NAME>
 ```
 
-2️⃣ **Ensured Image Existed in Kind Cluster:**
+2️ **Ensured Image Existed in Kind Cluster:**
 
 ```sh
 docker images | grep mlflow_v2
 ```
 
-3️⃣ **Forced Kubernetes to Use Local Image:**
+3️ **Forced Kubernetes to Use Local Image:**
 
 ```sh
 kubectl patch deployment mlflow -p '{"spec": {"template": {"spec": {"containers": [{"name": "mlflow", "imagePullPolicy": "IfNotPresent"}]}}}}'
 ```
 
-4️⃣ **Restarted Kubelet:**
+4️ **Restarted Kubelet:**
 
 ```sh
 sudo systemctl restart kubelet
@@ -201,7 +201,7 @@ Since local execution was unstable due to image pulling issues, **Cpouta was cho
 
 ---
 
-## 2️⃣ Setting Up MLOps on CSC with Cpouta
+## 2️ Setting Up MLOps on CSC with Cpouta
 
 ### **Step 1: Connect to Cpouta Environment**
 
@@ -227,13 +227,13 @@ pip install -r requirements.txt
 
 ### **Step 4: Set Up Kubernetes on Cpouta**
 
-1️⃣ **Start a Kubernetes Cluster:**
+1️ **Start a Kubernetes Cluster:**
 
 ```sh
 kubectl create cluster --name mlops-platform
 ```
 
-2️⃣ **Verify Kubernetes Status:**
+2️ **Verify Kubernetes Status:**
 
 ```sh
 kubectl get nodes
@@ -254,7 +254,7 @@ kubectl get svc -n mlflow
 
 ---
 
-## 3️⃣ Troubleshooting Issues on Cpouta
+## 3️.Troubleshooting Issues on Cpouta
 
 ### **Issue: Kubernetes Deployment Not Found**
 
