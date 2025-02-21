@@ -122,12 +122,12 @@ pip install -r requirements.txt
 ```
 
 ### 4.4 Set Up Kubernetes on Cpouta
-1️⃣ **Start a Kubernetes Cluster:**
+1️ **Start a Kubernetes Cluster:**
 ```sh
 kubectl create cluster --name mlops-platform
 ```
 
-2️⃣ **Verify Kubernetes Status:**
+2️ **Verify Kubernetes Status:**
 ```sh
 kubectl get nodes
 ```
@@ -145,14 +145,14 @@ kubectl get svc -n mlflow
 
 ---
 
-## ❌ 5. Troubleshooting Issues on Cpouta
+## 5. Troubleshooting Issues on Cpouta
 
 ### Issue: Kubernetes Deployment Not Found
 ```
 Error from server (NotFound): deployments.apps "mlflow" not found
 ```
 
-#### ✅ Solution:
+#### Solution:
 - Check if the deployment exists:
   ```sh
   kubectl get deployments --all-namespaces
@@ -164,10 +164,10 @@ Error from server (NotFound): deployments.apps "mlflow" not found
 
 ---
 
-## 🎯 Conclusion
+## Conclusion
 - If **local setup** fails, prefer **Cpouta deployment**.
 - Keep **Docker images correctly referenced** in Kubernetes.
 - Use **GitHub branches** to safely move code from Cpouta to local.
 - **Regularly sync** with the upstream repository.
 
-🚀 **Now, you should have a stable MLOps deployment on Cpouta!**
+ **Now, you should have a stable MLOps deployment on Cpouta!**
