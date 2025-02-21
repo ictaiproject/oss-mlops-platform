@@ -1,4 +1,22 @@
 # Preliminary Description
+# Setting Up GitHub Organization and Repository Forking  
+
+## 1. Creating a GitHub Organization  
+We created a new GitHub organization named **`ictaigithub`** to manage our repositories collaboratively.  
+
+## 2. Forking the Repository  
+We forked the main branch of **`oss-mlops-platform`** into our newly created organization. This allows us to make changes independently while keeping the option to sync with the upstream repository.  
+
+## 3. Managing Organization Members  
+- Added all team members to the organization for collaboration.  
+- Assigned **Jukka** as the **owner** of the organization to grant full administrative control.  
+
+## 4. Next Steps  
+- Set up repository access permissions to ensure smooth collaboration.  
+- Define contribution workflows for the team.  
+- Synchronize changes from the upstream repository when needed.  
+
+
 
 Initially, I attempted to install the GitHub project locally on my Windows 11 machine. To do this, I needed to have WSL (Windows Subsystem for Linux) installed. Additionally, Docker Desktop must be installed on the Windows machine. Next, I copied the GitHub organization project, MLOPSAI. Using WSL, I was able to clone the repository to the Linux subsystem folder on my Windows machine with the `git clone` command. After that, I executed the installation using the command `sudo ./Setup.sh`.
 
