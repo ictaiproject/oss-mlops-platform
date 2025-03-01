@@ -1,94 +1,126 @@
-# 📌 MLOps Platform Setup and Deployment Guide
+# 📌 MLOps Platform Setup Guide
 
-## 🚀 1. Setting Up GitHub Organization and Repository Forking
+## 🚀 1. Cloning the Repository
 
-### 1.1 Creating a GitHub Organization
-We created a new GitHub organization named **`ictaigithub`** to manage our repositories collaboratively.
-
-### 1.2 Forking the Repository
-We forked the main branch of **`oss-mlops-platform`** into our newly created organization. This allows us to make changes independently while keeping the option to sync with the upstream repository.
-
-### 1.3 Managing Organization Members
-- Added all team members to the organization for collaboration.
-- Assigned **Jukka** as the **owner** of the organization to grant full administrative control.
-
-### 1.4 Next Steps
-- Set up repository access permissions to ensure smooth collaboration.
-- Define contribution workflows for the team.
-- Synchronize changes from the upstream repository when needed.
-
----
-
-
-
-## 🌍 2. Installing and Running MLOps Platform on Cpouta
-
-### 2.1 Connect to Cpouta Environment
+### 1.1 Clone the MLOps Repository
 ```sh
-ssh <username>@csc.fi
-```
 
-### 2.2 Clone the MLOps Repository on Cpouta
-```sh
-git clone <repo-url>
+git clone https://github.com/Softala-MLOPS/oss-mlops-platform.git
 cd oss-mlops-platform
 ```
 
-### 2.3 Install Dependencies
+---
+
+## 🛠️ 2. Installing Required Tools
+
+### 2.1 Install Docker
 ```sh
-module load python
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+```
+Verify installation:
+```sh
+docker --version
 ```
 
-### 2.4 Set Up Kubernetes on Cpouta
-1️ **Start a Kubernetes Cluster:**
+### 2.2 Install Kubernetes (kubectl)
 ```sh
-kubectl create cluster --name mlops-platform
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+```
+Verify installation:
+```sh
+kubectl version --client
 ```
 
-2️ **Verify Kubernetes Status:**
+### 2.3 Install Kind (Kubernetes in Docker)
+```sh
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
+chmod +x kind
+sudo mv kind /usr/local/bin/
+```
+Verify installation:
+```sh
+kind version
+```
+
+---
+
+## 🌍 3. Creating and Configuring Kubernetes Cluster
+
+### 3.1 Create a Kubernetes Cluster with Kind
+```sh
+kind create cluster --name mlops-cluster
+```
+Verify cluster is running:
+```sh
+kubectl cluster-info
+```
+
+### 3.2 Check Kubernetes Nodes
 ```sh
 kubectl get nodes
 ```
 
-### 4.5 Deploy MLflow on Cpouta
+---
+
+## 🚀 4. Deploying MLOps Services
+
+### 4.1 Apply MLOps Deployment Files
 ```sh
 kubectl apply -f mlflow-deployment.yaml
 ```
 
-### 4.6 Verify Deployment
+### 4.2 Check Running Pods
 ```sh
-kubectl get pods -n mlflow
-kubectl get svc -n mlflow
+kubectl get pods -A
 ```
 
 ---
 
-## 5. Troubleshooting Issues on Cpouta
+## 🔧 5. Troubleshooting Issues
 
 ### Issue: Kubernetes Deployment Not Found
 ```
 Error from server (NotFound): deployments.apps "mlflow" not found
 ```
-
 #### Solution:
-- Check if the deployment exists:
-  ```sh
-  kubectl get deployments --all-namespaces
-  ```
-- If missing, redeploy it:
-  ```sh
-  kubectl apply -f mlflow-deployment.yaml
-  ```
+```sh
+kubectl get deployments -A
+kubectl apply -f mlflow-deployment.yaml
+```
+
+### Issue: Pod Stuck in "CrashLoopBackOff"
+```sh
+kubectl describe pod <pod-name> -n mlflow
+kubectl logs <pod-name> -n mlflow
+```
+
+### Issue: Kubernetes Cluster Not Found
+```sh
+kubectl config current-context
+kubectl config use-context kind-mlops-cluster
+```
+
+### Issue: Pods Not Running
+```sh
+kubectl get pods -A
+kubectl describe pod <pod-name>
+```
+#### Solution:
+- Check if any pods are in `Pending` state.
+- Verify logs for errors and missing dependencies.
+- Restart failed pods:
+```sh
+kubectl delete pod <pod-name>
+kubectl apply -f mlflow-deployment.yaml
+```
 
 ---
 
-## Conclusion
-- If **local setup** fails, prefer **Cpouta deployment**.
-- Keep **Docker images correctly referenced** in Kubernetes.
-- Use **GitHub branches** to safely move code from Cpouta to local.
-- **Regularly sync** with the upstream repository.
-
- **Now, you should have a stable MLOps deployment on Cpouta!**
+## 🎯 Conclusion
+- Ensure **Docker, Kubernetes, and Kind** are installed correctly.
+- If any **pods are failing**, check logs and redeploy.
+- **Keep repositories updated** and sync with upstream regularly.
+- **Now, you should have a fully working MLOps deployment!** 🚀
