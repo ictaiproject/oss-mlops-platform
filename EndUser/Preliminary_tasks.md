@@ -19,101 +19,22 @@ We forked the main branch of **`oss-mlops-platform`** into our newly created org
 
 ---
 
-## 🛠️ 2. Troubleshooting ImagePullErr: Moving Code from Cpouta to GitHub to Local Machine
 
-### 2.1 Create a New Branch on GitHub
-Before pushing the code from **Cpouta**, create a new branch on GitHub:
 
-```sh
-git checkout -b new-branch
-```
+## 🌍 2. Installing and Running MLOps Platform on Cpouta
 
-Push the branch to GitHub:
-
-```sh
-git push origin new-branch
-```
-
-### 2.2 Push Code from Cpouta to GitHub
-Ensure your Git is configured correctly:
-
-```sh
-git config --global user.name "Your Name"
-git config --global user.email "your-email@example.com"
-```
-
-Add and commit your changes:
-
-```sh
-git add .
-git commit -m "Pushing code from Cpouta"
-```
-
-Push the changes:
-
-```sh
-git push origin new-branch
-```
-
-### 2.3 Pull the Branch to a Local Machine
-On your local machine, clone the repository if you haven't already:
-
-```sh
-git clone https://github.com/your-username/repository.git
-```
-
-Navigate into the repository and switch to the new branch:
-
-```sh
-cd repository
-git checkout new-branch
-```
-
-Pull the latest changes:
-
-```sh
-git pull origin new-branch
-```
-
----
-
-## 🔧 3. Troubleshooting `ImagePullErr`
-
-### 3.1 Check the Image Name
-Ensure the image name in the `Dockerfile` or Kubernetes deployment YAML is correct.
-
-```sh
-kubectl describe pod <pod-name>
-```
-
-### 3.2 Force Kubernetes to Use a Locally Available Image
-If using local images, prevent Kubernetes from pulling remote images:
-
-```sh
-kubectl patch deployment mlflow -p '{"spec": {"template": {"spec": {"containers": [{"name": "mlflow", "imagePullPolicy": "IfNotPresent"}]}}}}'
-```
-
-### 3.3 Restart Kubelet
-```sh
-sudo systemctl restart kubelet
-```
-
----
-
-## 🌍 4. Installing and Running MLOps Platform on Cpouta
-
-### 4.1 Connect to Cpouta Environment
+### 2.1 Connect to Cpouta Environment
 ```sh
 ssh <username>@csc.fi
 ```
 
-### 4.2 Clone the MLOps Repository on Cpouta
+### 2.2 Clone the MLOps Repository on Cpouta
 ```sh
 git clone <repo-url>
 cd oss-mlops-platform
 ```
 
-### 4.3 Install Dependencies
+### 2.3 Install Dependencies
 ```sh
 module load python
 python3 -m venv venv
@@ -121,7 +42,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4.4 Set Up Kubernetes on Cpouta
+### 2.4 Set Up Kubernetes on Cpouta
 1️ **Start a Kubernetes Cluster:**
 ```sh
 kubectl create cluster --name mlops-platform
