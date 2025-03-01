@@ -11,7 +11,7 @@ cd oss-mlops-platform
 
 ---
 
-## 2Install Docker
+## 2. Install Docker
 ```sh
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
@@ -24,7 +24,7 @@ docker --version
 
 
 
-## 🔧 5. Troubleshooting Issues
+## 🔧 3. Troubleshooting Issues
 
 ### Issue: Kubernetes Deployment Not Found
 ```
@@ -65,7 +65,6 @@ kubectl apply -f mlflow-deployment.yaml
 ---
 
 ## 🎯 Conclusion
-- Ensure **Docker, Kubernetes, and Kind** are installed correctly.
+- Ensure **Docker is installed correctly.
 - If any **pods are failing**, check logs and redeploy.
 - **Keep repositories updated** and sync with upstream regularly.
-- **Now, you should have a fully working MLOps deployment!** 🚀
