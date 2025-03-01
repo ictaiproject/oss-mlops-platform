@@ -4,8 +4,8 @@
 
 ### 1.1 Clone the MLOps Repository
 ```sh
-
-git clone https://github.com/Softala-MLOPS/oss-mlops-platform.git
+# Replace <repo-url> with the actual repository link
+git clone <repo-url>
 cd oss-mlops-platform
 ```
 
