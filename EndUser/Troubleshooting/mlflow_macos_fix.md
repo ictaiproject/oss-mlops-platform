@@ -20,15 +20,10 @@ These errors occur because the base image (e.g., `python:3.8`) and dependencies 
 
 To fix this issue, we need to build a new MLflow image from the **Dockerfile** in the repository, ensuring that it supports ARM64.
 
-### 1️⃣ Clone the MLflow Repository
+### 1️⃣  Build a New Docker Image for ARM64
 ```sh
-git clone https://github.com/mlflow/mlflow.git
-cd mlflow
-```
-
-### 2️⃣ Build a New Docker Image for ARM64
-```sh
-docker buildx create --use
+££ if you are the oss-mlops-platform Folder
+docker build ./DockerFile/mlflow 
 docker buildx build --platform linux/arm64 -t myusername/mlflow-arm64:v1 .
 ```
 🔹 Replace `myusername` with your **Docker Hub** username.  
@@ -40,28 +35,11 @@ docker login
 docker push myusername/mlflow-arm64:v1
 ```
 
----
-
-## 🔄 Updating Kubernetes Deployment
-
-After building and pushing the image, update your **MLflow deployment file** (`mlflow-deployment.yaml`) to use the new image.
-
-### Edit `mlflow-deployment.yaml`
-Find the `image:` section and replace the existing image name with your new image:
-
-```yaml
-spec:
-  containers:
-  - name: mlflow
-    image: myusername/mlflow-arm64:v1
-```
-
-### Apply the Updated Deployment
-```sh
-kubectl apply -f mlflow-deployment.yaml
-```
+## Notice 
 
 ---
+
+
 
 ## ✅ Conclusion
 
