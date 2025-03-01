@@ -22,7 +22,7 @@ To fix this issue, we need to build a new MLflow image from the **Dockerfile** i
 
 ### 1️⃣  Build a New Docker Image for ARM64
 ```sh
-££ if you are the oss-mlops-platform Folder
+## if you are the oss-mlops-platform Folder
 docker build ./DockerFile/mlflow 
 docker buildx build --platform linux/arm64 -t myusername/mlflow-arm64:v1 .
 ```
