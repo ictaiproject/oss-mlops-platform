@@ -11,9 +11,7 @@ cd oss-mlops-platform
 
 ---
 
-## 🛠️ 2. Installing Required Tools
-
-### 2.1 Install Docker
+## 2Install Docker
 ```sh
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
@@ -23,61 +21,8 @@ Verify installation:
 docker --version
 ```
 
-### 2.2 Install Kubernetes (kubectl)
-```sh
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-chmod +x kubectl
-sudo mv kubectl /usr/local/bin/
-```
-Verify installation:
-```sh
-kubectl version --client
-```
 
-### 2.3 Install Kind (Kubernetes in Docker)
-```sh
-curl -Lo ./kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
-chmod +x kind
-sudo mv kind /usr/local/bin/
-```
-Verify installation:
-```sh
-kind version
-```
 
----
-
-## 🌍 3. Creating and Configuring Kubernetes Cluster
-
-### 3.1 Create a Kubernetes Cluster with Kind
-```sh
-kind create cluster --name mlops-cluster
-```
-Verify cluster is running:
-```sh
-kubectl cluster-info
-```
-
-### 3.2 Check Kubernetes Nodes
-```sh
-kubectl get nodes
-```
-
----
-
-## 🚀 4. Deploying MLOps Services
-
-### 4.1 Apply MLOps Deployment Files
-```sh
-kubectl apply -f mlflow-deployment.yaml
-```
-
-### 4.2 Check Running Pods
-```sh
-kubectl get pods -A
-```
-
----
 
 ## 🔧 5. Troubleshooting Issues
 
