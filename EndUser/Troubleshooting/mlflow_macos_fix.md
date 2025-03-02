@@ -36,6 +36,9 @@ docker push myusername/mlflow-arm64:v1
 ```
 
 ## Notice 
+Another thing here is that when pushing an image to the dockerhub, you might get an error for logining in dockerhub in macbook m1/m2/m3 chip. And the error may look like this: 
+
+if 
 
 ---
 
