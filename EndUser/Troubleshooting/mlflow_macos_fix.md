@@ -20,21 +20,16 @@ These errors occur because the base image (e.g., `python:3.8`) and dependencies 
 
 To fix this issue, we need to build a new MLflow image from the **Dockerfile** in the repository, ensuring that it supports ARM64.
 
-### 1️⃣ Clone the MLflow Repository
+### 1️⃣ Build a New Docker Image for ARM64
 ```sh
-git clone https://github.com/mlflow/mlflow.git
-cd mlflow
-```
-
-### 2️⃣ Build a New Docker Image for ARM64
-```sh
-docker buildx create --use
+## If you are in the oss-mlops-platform folder
+docker build ./DockerFile/mlflow 
 docker buildx build --platform linux/arm64 -t myusername/mlflow-arm64:v1 .
 ```
 🔹 Replace `myusername` with your **Docker Hub** username.  
 🔹 The `--platform linux/arm64` flag ensures the image is built for Apple Silicon.
 
-### 3️⃣ Push the Image to Docker Hub
+### 2️⃣ Push the Image to Docker Hub
 ```sh
 docker login
 docker push myusername/mlflow-arm64:v1
@@ -42,23 +37,44 @@ docker push myusername/mlflow-arm64:v1
 
 ---
 
-## 🔄 Updating Kubernetes Deployment
+## 🚨 Fixing Docker Login Issues on Mac M1/M2/M3
 
-After building and pushing the image, update your **MLflow deployment file** (`mlflow-deployment.yaml`) to use the new image.
+If you encounter a **Docker login error** when pushing the image, it may look like this:
 
-### Edit `mlflow-deployment.yaml`
-Find the `image:` section and replace the existing image name with your new image:
+![Screenshot](images/Docker_login_error.png)
 
-```yaml
-spec:
-  containers:
-  - name: mlflow
-    image: myusername/mlflow-arm64:v1
-```
+To fix this, modify the **config.json** file in the `.docker` directory.
 
-### Apply the Updated Deployment
+1. Locate the **config.json** file:
+   ```sh
+   nano ~/.docker/config.json
+   ```
+
+2. Find the line:
+   ```json
+   "credsStore": "desktop"
+   ```
+
+3. Change it based on your OS:
+
+   ✅ **For Mac:**  
+   ```json
+   "credsStore": "osxkeychain"
+   ```
+
+   ✅ **For Linux:**  
+   ```json
+   "credsStore": "pass"
+   ```
+
+   ✅ **For Windows (if using WSL):**  
+   ```json
+   "credsStore": "wincred"
+   ```
+
+Save the file and try logging in again:
 ```sh
-kubectl apply -f mlflow-deployment.yaml
+docker login
 ```
 
 ---
