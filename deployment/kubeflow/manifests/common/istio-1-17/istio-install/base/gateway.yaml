@@ -2,6 +2,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: istio-ingressgateway
+  namespace: istio-system
   labels:
     release: istio
 spec:
@@ -10,8 +11,11 @@ spec:
     istio: ingressgateway
   servers:
   - port:
-      number: 80
-      name: http
-      protocol: HTTP
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls: 
+      mode: SIMPLE 
+      credentialName: all-certificate-for-mlops
     hosts:
     - '*'

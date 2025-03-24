@@ -7,3 +7,6 @@ resources:
 - prometheus-deployment.yaml
 - prometheus-service.yaml
 - prometheus-pvc.yaml
+- prometheus-ingress.yaml
+- prometheus-virtualservice.yaml
+

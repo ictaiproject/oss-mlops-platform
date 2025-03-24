@@ -6,7 +6,7 @@ metadata:
     name: mlflow
   name: mlflow
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
     - name: http
       port: 5000

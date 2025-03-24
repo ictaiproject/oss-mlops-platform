@@ -4,6 +4,7 @@ resources:
 - mlflow-service.yaml
 - mlflow-sa.yaml
 - mlflow-virtualservice.yaml
+- mlflow-ingress.yaml
 
 configMapGenerator:
 - name: mlflow-configmap

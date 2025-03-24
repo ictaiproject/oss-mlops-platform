@@ -1,23 +1,22 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: mlflow
-  namespace: mlflow
+  name: grafana
+  namespace: monitoring
 spec:
   gateways:
-  - kubeflow/kubeflow-gateway
   - istio-system/istio-ingressgateway
-
+  - kubeflow/kubeflow-gateway
   hosts:
   - '*'
   http:
   - match:
     - uri:
-        prefix: /mlflow/
+        prefix: /grafana/
     rewrite:
       uri: /
     route:
     - destination:
-        host: mlflow.mlflow.svc.cluster.local
+        host: grafana.monitoring.svc.cluster.local
         port:
-          number: 5000
+          number: 3000
