@@ -23,17 +23,18 @@ spec:
       headers:
         response:
           set:
-            X-Frame-Options: "SAMEORIGIN"
+            X-Frame-Options: "SAMEORIGIN"   
             Access-Control-Allow-Origin: "https://mlops.local"
             Access-Control-Allow-Credentials: "true"
     headers:
       request:
         set:
-          X-Forwarded-Prefix: "/grafana"
+          X-Forwarded-Prefix: "/grafana/"
     corsPolicy:
       allowOrigins:
         - exact: "https://mlops.local"
       allowMethods:
         - GET
         - POST
+        - OPTIONS
       allowCredentials: true
