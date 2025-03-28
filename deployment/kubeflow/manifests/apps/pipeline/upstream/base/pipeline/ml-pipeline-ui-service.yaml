@@ -4,7 +4,9 @@ metadata:
   labels:
     app: ml-pipeline-ui
   name: ml-pipeline-ui
+  namespace: kubeflow
 spec:
+  type: ClusterIP
   ports:
   - name: http
     protocol: TCP

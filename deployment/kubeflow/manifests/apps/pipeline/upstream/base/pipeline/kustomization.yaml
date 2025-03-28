@@ -35,6 +35,8 @@ resources:
   - container-builder-sa.yaml
   - viewer-sa.yaml
   - kfp-launcher-configmap.yaml
+  - ml-pipeline-ui-ingress.yaml
+  - ml-pipeline-ui-virtual-service.yaml
 images:
   - name: gcr.io/ml-pipeline/api-server
     newTag: 2.0.0-alpha.7

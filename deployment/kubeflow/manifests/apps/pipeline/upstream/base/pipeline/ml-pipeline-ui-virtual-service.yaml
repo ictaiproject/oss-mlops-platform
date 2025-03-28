@@ -2,9 +2,9 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   labels:
-    app: mlflow
-  name: mlflow-virtual-service
-  namespace: mlflow
+    app: ml-pipeline-ui
+  name: ml-pipeline-ui-virtualservice
+  namespace: kubeflow
 spec:
   gateways:
   - kubeflow/kubeflow-gateway
@@ -15,14 +15,14 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /mlflow/
+        prefix: /mlpipeline/
     rewrite:
       uri: /
     route:
     - destination:
-        host: mlflow.mlflow.svc.cluster.local
+        host: ml-pipeline-ui.kubeflow.svc.cluster.local
         port:
-          number: 5000
+          number: 3000
       headers:
         response:
           set:

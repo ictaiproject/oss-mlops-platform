@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app: ml-pipeline-ui
+  name: ml-pipeline-ui-ingress
+  namespace: kubeflow
+
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: mlops.local
+      http:
+        paths:
+          - path: /mlpipeline(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: ml-pipeline-ui
+                port:
+                  number: 3000

@@ -7,4 +7,5 @@ resources:
 - ../../custom/kserve-custom/env/standalone-kfp
 - ../../mlflow/env/local
 - ../../monitoring
+- ../../nginx
 
