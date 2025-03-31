@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-web-config
+  namespace: monitoring
+data:
+  web-config.yml: |
+    # External URL configuration for Prometheus
+    web:
+      external_url: https://mlops.local/prometheus

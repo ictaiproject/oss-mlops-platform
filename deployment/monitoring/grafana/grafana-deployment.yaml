@@ -29,6 +29,12 @@ spec:
           requests: 
             memory: 500M
             cpu: "250m"
+        env:
+          - name: GF_SERVER_ROOT_URL
+            value: "https://mlops.local/grafana"
+          - name: GF_SERVER_SERVE_FROM_SUB_PATH
+            value: "true"
+
         volumeMounts:
           - mountPath: /var/lib/grafana
             name: grafana-storage

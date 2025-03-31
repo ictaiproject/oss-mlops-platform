@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-root-url-config
+  namespace: monitoring
+data:
+  grafana.ini: |
+    [server]
+    domain = mlops.local
+    root_url = %(protocol)s://%(domain)s/grafana
+    serve_from_sub_path = true
+    
+    [paths]
+    # Make sure Grafana knows about the sub-path
+    # This might help resolve the redirect loop issue
+    root_path = /grafana
+    
+    [security]
+    # This makes login work easier for troubleshooting
+    disable_initial_admin_creation = false
+    admin_user = admin
+    admin_password = admin
+    cookie_secure = true
+    cookie_samesite = lax
+    
+    # Enable detailed logs for troubleshooting
+    [log]
+    mode = console
+    level = debug

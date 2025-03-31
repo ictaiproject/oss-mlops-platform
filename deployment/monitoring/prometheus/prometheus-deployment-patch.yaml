@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-deployment
+  namespace: monitoring
+spec:
+  template:
+    spec:
+      containers:
+        - name: prometheus
+          args:
+            - "--config.file=/etc/prometheus/prometheus.yml"
+            - "--storage.tsdb.path=/prometheus/"
+            - '--storage.tsdb.retention.time=15d'
+            - "--web.external-url=/prometheus"
+            - "--web.route-prefix=/"
+          volumeMounts:
+            - name: prometheus-config-volume
+              mountPath: /etc/prometheus/
+            - name: prometheus-storage-volume
+              mountPath: /prometheus/
+              readOnly: false
+            - name: prometheus-web-config
+              mountPath: /etc/prometheus/web-config.yml
+              subPath: web-config.yml
+      volumes:
+        - name: prometheus-config-volume
+          configMap:
+            defaultMode: 420
+            name: prometheus-server-conf
+        - name: prometheus-storage-volume
+          persistentVolumeClaim:
+            claimName: prometheus-pvc
+        - name: prometheus-web-config
+          configMap:
+            name: prometheus-web-config

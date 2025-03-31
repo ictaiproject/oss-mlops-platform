@@ -1,27 +1,28 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: mlflow-ingress
-  namespace: mlflow
+  name: grafana-ingress
+  namespace: monitoring
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/proxy-buffering: "on"
 spec:
   tls:
     - hosts:
         - mlops.local
-      secretName: mlflow-tls
+      secretName: all-certificate-for-mlops
   rules:
     - host: mlops.local
       http:
         paths:
-          - path: /mlflow(/|$)(.*)
+          - path: /grafana(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
-                name: mlflow
+                name: grafana
                 port:
-                  number: 5000
-      
+                  number: 3000

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+      - name: grafana
+        image: grafana/grafana:8.4.3
+        volumeMounts:
+        - mountPath: /var/lib/grafana
+          name: grafana-storage
+          readOnly: false
+        - mountPath: /etc/grafana/provisioning/datasources
+          name: grafana-datasources
+          readOnly: false
+        - mountPath: /etc/grafana/provisioning/dashboards/
+          name: grafana-dashboards
+          readOnly: false
+        - mountPath: /opt/grafana/dashboards
+          name: grafana-dashboards-json
+        - mountPath: /etc/grafana/grafana.ini
+          name: grafana-config
+          subPath: grafana.ini
+      volumes:
+      - name: grafana-storage
+        persistentVolumeClaim:
+          claimName: grafana-pvc
+      - name: grafana-datasources
+        configMap:
+            defaultMode: 420
+            name: datasources-conf
+      - name: grafana-dashboards
+        configMap:
+          defaultMode: 420
+          name: dashboards-conf
+      - name: grafana-dashboards-json
+        configMap:
+          defaultMode: 420
+          name: dashboards-json-conf
+      - name: grafana-config
+        configMap:
+          name: grafana-root-url-config
