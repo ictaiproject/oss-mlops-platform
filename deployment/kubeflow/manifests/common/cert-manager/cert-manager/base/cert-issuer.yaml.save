@@ -1,0 +1,17 @@
+ApiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned-cluster-issuer
+  namespace: cert-manager
+spec:
+  # If the User have the DNS name then Uncomment the following lines 
+  # acme:
+    # server: https://acme-v02.api.letsencrypt.org/directory
+    # email: ayush.ghimire@myy.haaga-helia.fi
+    # privateKeySecretRef:
+    #   name: letsencrypt-prod
+    # solvers:
+    # - http01:
+    #     ingress:
+    #       class: nginx
+    selfSigned: {} # Remove this if You are not using the  Selfsigned certificate or if You have the DNA name 
