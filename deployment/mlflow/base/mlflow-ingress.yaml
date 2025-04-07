@@ -12,7 +12,7 @@ spec:
   tls:
     - hosts:
         - vm1039.kaj.pouta.csc.fi
-      secretName: tls-certificate
+      secretName: myapp-cert
   rules:
     - host: vm1039.kaj.pouta.csc.fi
       http:
