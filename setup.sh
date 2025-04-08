@@ -231,4 +231,7 @@ if [ "$RUN_TESTS" = "true" ]; then
   /bin/bash "$SCRIPT_DIR/scripts/run_tests.sh"
 fi
 
+/bin/bash "$SCRIPT_DIR/https/SSl_creation.sh"
+
+
 exit 0

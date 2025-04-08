@@ -1,36 +1,37 @@
 #!/bin/bash
 
-# --- Load environment variables from .env file ---
-if [ -f .env ]; then
-  export $(cat .env | xargs)
-else
-  echo ".env file not found!"
-  exit 1
-fi
+# Load environment variables from .env file
+set -a
+source .env
+set +a
 
 # --- Validate Required Variables ---
-if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_EMAIL" ] || [ -z "$DOMAIN" ]; then
-  echo "Error: One or more required environment variables are missing."
+if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_EMAIL" ] || [ -z "$CLOUDFLARE_DOMAIN" ] || [ -z "$SECRET_NAMESPACE" ]; then
+  echo "Error: Missing required environment variables. Ensure the .env file is properly configured."
   exit 1
 fi
 
-# --- Save CA API Token to Kubernetes Secret ---
-kubectl create secret generic ca-api-token-secret \
+# --- Step 1: Create the Secret for Cloudflare API ---
+kubectl create secret generic cloudflare-api-secret \
   --from-literal=api-token="$CLOUDFLARE_API_TOKEN" \
-  -n "$SECRET_NAMESPACE" --dry-run=client -o yaml | kubectl apply -f -
+  --from-literal=email="$CLOUDFLARE_EMAIL" \
+  --from-literal=domain="$CLOUDFLARE_DOMAIN" \
+  --from-literal=secret-namespace="$SECRET_NAMESPACE" \
+  -n cert-manager --dry-run=client -o yaml | kubectl apply -f -
 
-echo "API Token for CA saved as Kubernetes Secret."
+echo "Cloudflare API token and details saved to Kubernetes Secret."
 
-# --- Create ClusterIssuer for the CA ---
+# --- Step 2: Create ClusterIssuer for Cloudflare ---
 cat <<EOF | kubectl apply -f -
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   name: $CA_NAME
+  namespace: cert-manager
 spec:
   acme:
     email: "$CLOUDFLARE_EMAIL"
-    server: https://acme-v02.api.letsencrypt.org/directory  # Use ACME API URL of your CA
+    server: https://acme-v02.api.letsencrypt.org/directory  # ACME API endpoint
     privateKeySecretRef:
       name: $CA_NAME-account-key
     solvers:
@@ -38,31 +39,31 @@ spec:
         cloudflare:
           email: "$CLOUDFLARE_EMAIL"
           apiTokenSecretRef:
-            name: ca-api-token-secret
+            name: cloudflare-api-secret
             key: api-token
 EOF
 
-echo "ClusterIssuer for $CA_NAME has been created."
+echo "ClusterIssuer for Cloudflare has been created."
 
-# --- Create Certificate resource ---
+# --- Step 3: Create Certificate Resource ---
 cat <<EOF | kubectl apply -f -
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: tls-cert-$DOMAIN
+  name: tls-cert-$CLOUDFLARE_DOMAIN
   namespace: $SECRET_NAMESPACE
 spec:
-  secretName: tls-secret-$DOMAIN
+  secretName: myapp-cert
   issuerRef:
     name: $CA_NAME
     kind: ClusterIssuer
-  commonName: $DOMAIN
+  commonName: $CLOUDFLARE_DOMAIN
   dnsNames:
-  - $DOMAIN
+  - $CLOUDFLARE_DOMAIN
 EOF
 
-echo "Certificate resource for $DOMAIN has been requested."
+echo "Certificate resource for $CLOUDFLARE_DOMAIN has been requested."
 
-# --- Check the certificate status ---
+# --- Step 4: Check the certificate status ---
 echo "You can check the status with:"
-echo "kubectl describe certificate tls-cert-$DOMAIN -n $SECRET_NAMESPACE"
+echo "kubectl describe certificate tls-cert-$CLOUDFLARE_DOMAIN -n $SECRET_NAMESPACE"
