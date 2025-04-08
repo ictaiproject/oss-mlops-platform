@@ -145,9 +145,13 @@ fi
 
 # INSTALL TOOLS
 if [[ "$(uname)" == "Darwin" ]]; then
+  
+
   bash "$SCRIPT_DIR/scripts/install_tools_mac.sh"  # Using default bash because /bin/bash is an old version (3)
+  bash "$SCRIPT_DIR/scripts/ssl_creation.sh"
 else
   /bin/bash "$SCRIPT_DIR/scripts/install_tools.sh"
+  /bin/bash "$SCRIPT_DIR/scripts/ssl_creation.sh"
 fi
 
 # CREATE CLUSTER
