@@ -11,10 +11,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - "$CLOUDFLARE_DOMAIN"
+        - DOMAIN
       secretName: myapp-cert
   rules:
-    - host: "$CLOUDFLARE_DOMAIN"
+    - host: DOMAIN
       http:
         paths:
           - path: /mlflow(/|$)(.*)
