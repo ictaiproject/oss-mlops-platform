@@ -7,14 +7,18 @@ metadata:
     nginx.ingress.kubernetes.il/add-base-url: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
+  tls:
+    - hosts:
+        - "$CLOUDFLARE_DOMAIN"
+      secretName: myapp-cert
   rules:
-  - host: mlflow-minio.local
-    http:
-      paths:
-        - backend:
-            service:
-              name: mlflow-minio-service
-              port:
-                number: 9001
-          path: /
-          pathType: Prefix
+    - host: "$CLOUDFLARE_DOMAIN"
+      http:
+        paths:
+          - path: /minio(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: mlflow-minio-service
+                port:
+                  number: 9001

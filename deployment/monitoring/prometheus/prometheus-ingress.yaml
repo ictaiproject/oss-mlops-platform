@@ -11,10 +11,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - vm1039.kaj.pouta.csc.fi
+        - $CLOUDFLARE_DOMAIN
       secretName: myapp-cert
   rules:
-    - host: vm1039.kaj.pouta.csc.fi
+    - host: $CLOUDFLARE_DOMAIN
       http:
         paths:
           - path: /prometheus(/|$)(.*)

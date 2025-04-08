@@ -1,19 +1,13 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: tls-certificate
-  namespace: cert-manager
+  name: tls-cert-$CLOUDFLARE_DOMAIN
+  namespace: $SECRET_NAMESPACE
 spec:
   secretName: myapp-cert
   issuerRef:
-    name: letsencrypt-http
+    name: $CA_NAME
     kind: ClusterIssuer
+  commonName: $CLOUDFLARE_DOMAIN
   dnsNames:
-    - vm1039.kaj.pouta.csc.fi    # Replace with your domain name 
-    
-    # For The local testing , we Have to do the Following:
-    # for Mac and Linux  - echo "127.0.0.1 mlflow.local" | sudo tee -a /etc/hosts
-    # for Windows - Add the following line to the C:\Windows\System32\drivers\etc\hosts
-   
-
-
+  - $CLOUDFLARE_DOMAIN

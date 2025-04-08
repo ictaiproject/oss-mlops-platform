@@ -22,48 +22,38 @@ kubectl create secret generic cloudflare-api-secret \
 echo "Cloudflare API token and details saved to Kubernetes Secret."
 
 # --- Step 2: Create ClusterIssuer for Cloudflare ---
-cat <<EOF | kubectl apply -f -
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: $CA_NAME
-  namespace: cert-manager
-spec:
-  acme:
-    email: "$CLOUDFLARE_EMAIL"
-    server: https://acme-v02.api.letsencrypt.org/directory  # ACME API endpoint
-    privateKeySecretRef:
-      name: $CA_NAME-account-key
-    solvers:
-    - dns01:
-        cloudflare:
-          email: "$CLOUDFLARE_EMAIL"
-          apiTokenSecretRef:
-            name: cloudflare-api-secret
-            key: api-token
-EOF
 
-echo "ClusterIssuer for Cloudflare has been created."
 
-# --- Step 3: Create Certificate Resource ---
-cat <<EOF | kubectl apply -f -
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: tls-cert-$CLOUDFLARE_DOMAIN
-  namespace: $SECRET_NAMESPACE
-spec:
-  secretName: myapp-cert
-  issuerRef:
-    name: $CA_NAME
-    kind: ClusterIssuer
-  commonName: $CLOUDFLARE_DOMAIN
-  dnsNames:
-  - $CLOUDFLARE_DOMAIN
-EOF
+echo "ClusterIssuer for Cloudflare created."
 
-echo "Certificate resource for $CLOUDFLARE_DOMAIN has been requested."
+# --- Step 3: Update Ingress Host to Domain Name ---
+echo "Updating Ingress host to domain name: $CLOUDFLARE_DOMAIN"
+kubectl patch ingress mlflow-ingress -n mlflow --type='json' -p="[
+  {
+    \"op\": \"replace\",
+    \"path\": \"/spec/rules/0/host\",
+    \"value\": \"$CLOUDFLARE_DOMAIN\"
+  },
+  {
+    \"op\": \"replace\",
+    \"path\": \"/spec/tls/0/hosts/0\",
+    \"value\": \"$CLOUDFLARE_DOMAIN\"
+  }
+]"
 
-# --- Step 4: Check the certificate status ---
-echo "You can check the status with:"
-echo "kubectl describe certificate tls-cert-$CLOUDFLARE_DOMAIN -n $SECRET_NAMESPACE"
+echo "Ingress host updated to $CLOUDFLARE_DOMAIN."
+
+# --- Step 4: Retrieve Ingress Controller IP ---
+echo "Retrieving Ingress Controller IP..."
+INGRESS_IP=$(kubectl get svc -n ingress-nginx ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+if [ -z "$INGRESS_IP" ]; then
+  echo "Error: Could not retrieve Ingress Controller IP. Ensure the ingress-nginx service is configured with a LoadBalancer."
+  exit 1
+fi
+
+echo "Ingress Controller IP: $INGRESS_IP"
+
+# --- Step 5: Output DNS Configuration ---
+echo "Please configure your DNS settings as follows:"
+echo "Domain: $CLOUDFLARE_DOMAIN"
+echo "IP Address: $INGRESS_IP"

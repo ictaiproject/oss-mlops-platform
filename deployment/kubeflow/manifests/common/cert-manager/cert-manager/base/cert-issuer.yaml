@@ -5,11 +5,14 @@ metadata:
   namespace: cert-manager
 spec:
   acme:
-    email: ayushghimiresharma@gmail.com
+    email: "$CLOUDFLARE_EMAIL"
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-http-private-key
     solvers:
-    - http01:
-        ingress:
-          class: nginx
+    - dns01:
+        cloudflare:
+          email: "$CLOUDFLARE_EMAIL"
+          apiTokenSecretRef:
+            name: cloudflare-api-secret
+            key: api-token

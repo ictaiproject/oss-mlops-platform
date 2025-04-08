@@ -24,7 +24,7 @@ spec:
         response:
           set:
             X-Frame-Options: "SAMEORIGIN"   
-            Access-Control-Allow-Origin: "https://vm1039.kaj.pouta.csc.fi"
+            Access-Control-Allow-Origin: "https://$CLOUDFLARE_DOMAIN"
             Access-Control-Allow-Credentials: "true"
     headers:
       request:
@@ -32,7 +32,7 @@ spec:
           X-Forwarded-Prefix: "/prometheus/"
     corsPolicy:
       allowOrigins:
-        - exact: "https://vm1039.kaj.pouta.csc.fi"
+        - exact: "https://$CLOUDFLARE_DOMAIN"
       allowMethods:
         - GET
         - POST
