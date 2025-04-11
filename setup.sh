@@ -3,11 +3,13 @@
 set -eoa pipefail
 
 # Internal directory where to store platform settings
+
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 PLATFORM_DIR="$SCRIPT_DIR/.platform"
 mkdir -p "$PLATFORM_DIR"
 PLATFORM_CONFIG="$PLATFORM_DIR/.config"
 cp "$SCRIPT_DIR/config.env" $PLATFORM_CONFIG
+
 
 source $PLATFORM_CONFIG
 
