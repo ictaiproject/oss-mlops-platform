@@ -242,12 +242,10 @@ if [ "$RUN_TESTS" = "true" ]; then
   /bin/bash "$SCRIPT_DIR/scripts/run_tests.sh"
 fi
 
-cho "Running Kubernetes SSL configuration..."
-if [[ "$(uname)" == "Darwin" ]]; then
-  bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"  # Using default bash because /bin/bash is an old version (3)
-else
-  /bin/bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"
-fi
+echo "Running Kubernetes SSL configuration..."
+
+/bin/bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"
+
 
 echo "✅ Kubernetes SSL configuration completed!"
 
