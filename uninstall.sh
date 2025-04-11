@@ -28,8 +28,7 @@ if [ "$INSTALL_LOCAL_REGISTRY" = "true" ]; then
 fi
 
 # Remove the .env file
-ENV_FILE="/Users/ayushghimire/Documents/GitHub/oss-mlops-platform/deployment/kubeflow/manifests/common/cert-manager/cert-manager/base/.env"
-if [ -f "$ENV_FILE" ]; then
+ENV_FILE="../deployment/kubeflow/manifests/common/cert-manager/cert-manager/base/config.env"
     echo "Deleting the .env file at $ENV_FILE..."
     rm -f "$ENV_FILE"
     echo ".env file deleted."
