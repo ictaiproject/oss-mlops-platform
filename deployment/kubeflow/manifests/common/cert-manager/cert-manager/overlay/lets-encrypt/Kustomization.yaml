@@ -24,3 +24,9 @@ vars:
     namespace: cert-manager
   fieldref:
     fieldpath: data.domain
+  
+configMapGenerator:
+- name: cert-manager-config
+  namespace: cert-manager
+  envs:
+  - config.env

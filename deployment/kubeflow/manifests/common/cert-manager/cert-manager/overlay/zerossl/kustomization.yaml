@@ -31,3 +31,10 @@ vars:
     namespace: cert-manager
   fieldref:
     fieldpath: data.zero_api-id
+
+
+configMapGenerator:
+- name: cert-manager-config
+  namespace: cert-manager
+  envs:
+  - config.env

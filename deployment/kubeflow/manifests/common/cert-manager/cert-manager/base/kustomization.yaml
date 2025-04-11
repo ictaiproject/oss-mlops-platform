@@ -33,4 +33,4 @@ configMapGenerator:
 - name: cert-manager-config
   namespace: cert-manager
   envs:
-  - .env
+  - config.env
