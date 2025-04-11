@@ -2,31 +2,31 @@
 
 set -e
 
-# Define the .env file path
-ENV_FILE="../deployment/kubeflow/manifests/common/cert-manager/base/.env"
+# Define the config.env file path
+ENV_FILE="./deployment/kubeflow/manifests/common/cert-manager/base/config.env"
 
-# Check if the .env file exists
+# Check if the config.env file exists
 if [ ! -f "$ENV_FILE" ]; then
   echo "🖥️ Installing on a local host. No SSL configuration is required."
   echo "Exiting script."
   exit 0
 fi
 
-# Load variables from .env
-echo "✅ .env file found. Loading variables..."
+# Load variables from config.env
+echo "✅ config.env file found. Loading variables..."
 export $(grep -v '^#' $ENV_FILE | xargs)
 
 # Check required values
-if [[ -z "$DOMAIN_NAME" || -z "$USER_EMAIL" ]]; then
-  echo "❌ DOMAIN_NAME and USER_EMAIL must be set in $ENV_FILE"
+if [[ -z "$DOMAIN" || -z "$EMAIL" ]]; then
+  echo "❌ DOMAIN and EMAIL must be set in $ENV_FILE"
   exit 1
 fi
 
-# Create ConfigMap for DOMAIN_NAME and USER_EMAIL
+# Create ConfigMap for DOMAIN and EMAIL
 echo "✅ Creating ConfigMap 'cert-manager-config' in cert-manager namespace..."
 kubectl create configmap cert-manager-config \
-  --from-literal=domain="$DOMAIN_NAME" \
-  --from-literal=email="$USER_EMAIL" \
+  --from-literal=domain="$DOMAIN" \
+  --from-literal=email="$EMAIL" \
   -n cert-manager --dry-run=client -o yaml | kubectl apply -f -
 
 # Create Secret for ZeroSSL API token if available
@@ -43,7 +43,7 @@ echo "✅ SSL configuration completed successfully."
 
 # Apply the selected configuration
 if [ -z "$SSL_PROVIDER" ]; then
-  echo "❌ SSL_PROVIDER is not set. Please set it to 'letsencrypt' or 'zerossl' in your .env file."
+  echo "❌ SSL_PROVIDER is not set. Please set it to 'letsencrypt' or 'zerossl' in your config.env file."
   exit 1
 fi
 

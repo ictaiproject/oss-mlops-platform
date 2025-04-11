@@ -236,14 +236,9 @@ echo "Installation completed!"
 echo
 
 if [[ "$(uname)" == "Darwin" ]]; then
-  
- 
   bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"  # Using default bash because /bin/bash is an old version (3)
-  
 else
-  
   /bin/bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"
-  
 fi
 
 # TESTS
