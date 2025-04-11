@@ -3,7 +3,7 @@
 set -e
 
 # Define the config.env file path
-ENV_FILE="./deployment/kubeflow/manifests/common/cert-manager/base/config.env"
+ENV_FILE="../deployment/kubeflow/manifests/common/cert-manager/cert-manager/base/config.env"
 
 # Check if the config.env file exists
 if [ ! -f "$ENV_FILE" ]; then

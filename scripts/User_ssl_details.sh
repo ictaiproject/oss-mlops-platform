@@ -54,7 +54,7 @@ if [ -z "$DOMAIN_NAME" ]; then
 fi
 
 # Define the config.env file path
-ENV_FILE="../deployment/kubeflow/manifests/common/cert-manager/base/config.env"
+ENV_FILE="../deployment/kubeflow/manifests/common/cert-manager/cert-manager/base/config.env"
 
 # Create the config.env file and save SSL configurations
 echo "Creating config.env file at $ENV_FILE..."
