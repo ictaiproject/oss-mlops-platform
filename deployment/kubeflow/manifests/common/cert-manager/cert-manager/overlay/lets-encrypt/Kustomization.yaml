@@ -1,32 +1,37 @@
-# letsencrypt/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 namespace: cert-manager
 
 resources:
-- clusterissuer.yaml
-- certificate.yaml
+  - clusterissuer.yaml
+  - certificate.yaml
 
-# Configure variable references
-vars:
-- name: CERT_MANAGER_EMAIL
-  objref:
-    kind: ConfigMap
-    name: cert-manager-config
-    namespace: cert-manager
-  fieldref:
-    fieldpath: data.email
-- name: CERT_MANAGER_DOMAIN
-  objref:
-    kind: ConfigMap
-    name: cert-manager-config
-    namespace: cert-manager
-  fieldref:
-    fieldpath: data.domain
-  
 configMapGenerator:
-- name: cert-manager-config
-  namespace: cert-manager
-  envs:
-  - config.env
+  - name: cert-manager-config
+    envs:
+      - ./../../base/config.env
+    behavior: replace
+
+replacements:
+  - source:
+      kind: ConfigMap
+      name: cert-manager-config
+      fieldPath: data.email
+    targets:
+      - select:
+          kind: ClusterIssuer
+          name: letsencrypt-issuer
+        fieldPaths:
+          - spec.acme.email
+
+  - source:
+      kind: ConfigMap
+      name: cert-manager-config
+      fieldPath: data.domain
+    targets:
+      - select:
+          kind: Certificate
+          name: example-certificate
+        fieldPaths:
+          - spec.dnsNames.0
