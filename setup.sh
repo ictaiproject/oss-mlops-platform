@@ -150,12 +150,12 @@ if [[ "$(uname)" == "Darwin" ]]; then
   
   bash "$SCRIPT_DIR/scripts/User_ssl_details.sh"  # Using default bash because /bin/bash is an old version (3)
   bash "$SCRIPT_DIR/scripts/install_tools_mac.sh"
-  bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"  # Using default bash because /bin/bash is an old version (3)
+  # Removed the early call to Kubernetes_ssl_configmap_creation.sh here
   
 else
   /bin/bash "$SCRIPT_DIR/scripts/User_ssl_details.sh"
   /bin/bash "$SCRIPT_DIR/scripts/install_tools.sh"
-  /bin/bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"
+  # Removed the early call to Kubernetes_ssl_configmap_creation.sh here
   
 fi
 
@@ -231,25 +231,24 @@ if [ "$INSTALL_RAY" = true ]; then
   /bin/bash "$SCRIPT_DIR/scripts/install_ray.sh"
 fi
 
-echo
-echo "Installation completed!"
-echo
-
-
-
 # TESTS
 if [ "$RUN_TESTS" = "true" ]; then
   /bin/bash "$SCRIPT_DIR/scripts/run_tests.sh"
 fi
 
+echo
+echo "Installation completed!"
+echo
+
 echo "Running Kubernetes SSL configuration..."
 
-/bin/bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"
-
+# Now run the Kubernetes SSL configuration script after everything else
+if [[ "$(uname)" == "Darwin" ]]; then
+  bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"
+else
+  /bin/bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"
+fi
 
 echo "✅ Kubernetes SSL configuration completed!"
-
-
-
 
 exit 0
