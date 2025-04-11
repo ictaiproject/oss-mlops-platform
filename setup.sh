@@ -71,6 +71,8 @@ echo -e "\nDEPLOYMENT_OPTION=$DEPLOYMENT_OPTION" >> $PLATFORM_CONFIG
 echo -e "\nINSTALL_LOCAL_REGISTRY=$INSTALL_LOCAL_REGISTRY" >> $PLATFORM_CONFIG
 echo -e "\nINSTALL_RAY=$INSTALL_RAY" >> $PLATFORM_CONFIG
 
+
+
 # CHECK DISK SPACE
 RECOMMENDED_DISK_SPACE_KUBEFLOW=26214400
 RECOMMENDED_DISK_SPACE_KUBEFLOW_GB=$(($RECOMMENDED_DISK_SPACE_KUBEFLOW / 1024 / 1024))
@@ -146,12 +148,15 @@ fi
 # INSTALL TOOLS
 if [[ "$(uname)" == "Darwin" ]]; then
   
-
-  bash "$SCRIPT_DIR/scripts/install_tools_mac.sh"  # Using default bash because /bin/bash is an old version (3)
-  bash "$SCRIPT_DIR/scripts/ssl_creation.sh"
+  bash "$SCRIPT_DIR/scripts/User_ssl_details.sh"  # Using default bash because /bin/bash is an old version (3)
+  bash "$SCRIPT_DIR/scripts/install_tools_mac.sh"
+  bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"  # Using default bash because /bin/bash is an old version (3)
+  
 else
+  /bin/bash "$SCRIPT_DIR/scripts/User_ssl_details.sh"
   /bin/bash "$SCRIPT_DIR/scripts/install_tools.sh"
-  /bin/bash "$SCRIPT_DIR/scripts/ssl_creation.sh"
+  /bin/bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"
+  
 fi
 
 # CREATE CLUSTER
@@ -230,12 +235,23 @@ echo
 echo "Installation completed!"
 echo
 
+if [[ "$(uname)" == "Darwin" ]]; then
+  
+ 
+  bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"  # Using default bash because /bin/bash is an old version (3)
+  
+else
+  
+  /bin/bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"
+  
+fi
+
 # TESTS
 if [ "$RUN_TESTS" = "true" ]; then
   /bin/bash "$SCRIPT_DIR/scripts/run_tests.sh"
 fi
 
-/bin/bash "$SCRIPT_DIR/https/SSl_creation.sh"
+
 
 
 exit 0

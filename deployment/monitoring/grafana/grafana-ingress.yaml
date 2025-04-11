@@ -11,10 +11,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - DOMAIN
+        - domain
       secretName: myapp-cert
   rules:
-    - host: DOMAIN
+    - host: your-domain.com
       http:
         paths:
           - path: /grafana(/|$)(.*)

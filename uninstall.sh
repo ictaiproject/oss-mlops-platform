@@ -27,6 +27,16 @@ if [ "$INSTALL_LOCAL_REGISTRY" = "true" ]; then
     echo "Local Docker registry deleted."
 fi
 
+# Remove the .env file
+ENV_FILE="/Users/ayushghimire/Documents/GitHub/oss-mlops-platform/deployment/kubeflow/manifests/common/cert-manager/cert-manager/base/.env"
+if [ -f "$ENV_FILE" ]; then
+    echo "Deleting the .env file at $ENV_FILE..."
+    rm -f "$ENV_FILE"
+    echo ".env file deleted."
+else
+    echo "No .env file found at $ENV_FILE. Skipping."
+fi
+
 rm -rf "$PLATFORM_DIR"
 
 echo "The platform has been successfully uninstalled."

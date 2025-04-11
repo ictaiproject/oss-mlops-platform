@@ -1,0 +1,13 @@
+# letsencrypt-certificate.yaml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: letsencrypt-cert
+  namespace: cert-manager
+spec:
+  secretName: myapp-cert
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - ${CERT_MANAGER_DOMAIN}
