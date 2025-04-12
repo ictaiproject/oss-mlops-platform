@@ -56,6 +56,7 @@ fi
 # Define the .env file path
 ENV_FILE="../deployment/kubeflow/manifests/common/cert-manager/base/config.env"
 MlFLOW_FILE="../deployment/mlflow/base/config.env"
+KUBEFLOW_FILE="../deployment/kubeflow/manifests/apps/pipeline/upstream/base/pipeline/kustomization.yaml"
 # Create the .env file and save SSL configurations
 echo "Creating config.env file at $ENV_FILE..."
 {
@@ -71,6 +72,12 @@ echo "Creating config.env file at $ENV_FILE..."
     echo "Domain=$DOMAIN_NAME"
 
 }> "$MlFLOW_FILE"
+{
+    echo "Domain=$DOMAIN_NAME"
+
+}> "$KUBEFLOW_FILE"
+
+
 
 
 echo "SSL configuration completed successfully and saved to $ENV_FILE."
