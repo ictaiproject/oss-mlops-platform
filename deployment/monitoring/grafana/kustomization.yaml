@@ -10,3 +10,26 @@ resources:
 - dashboards-json-config-map.yaml
 - grafana-ingress.yaml
 - grafana-virtualservice.yaml
+
+
+configMapGenerator:
+  - name: grafana-configmap
+    envs:
+      - ./../../mlflow/base/config.env
+    behavior: replace
+
+  - name: mlflow-secret
+    literals:
+      - DB_PASSWORD=KFSg-AYoiPdfRun64z2-w89Kk7z5cJL2IbVvSd3l8Og
+
+replacements:
+  - source:
+      kind: ConfigMap
+      name: grafana-configmap
+      fieldPath: data.domain
+    targets:
+      - select:
+          kind: Ingress
+          name: grafana-ingress
+        fieldPaths:
+          - spec.rules.0.host

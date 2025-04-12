@@ -10,3 +10,20 @@ resources:
 - prometheus-ingress.yaml
 - prometheus-virtualservice.yaml
 
+configMapGenerator:
+  - name: prometheus-configmap
+    envs:
+      - ./../../mlflow/base/config.env
+    behavior: replace
+
+replacements:
+  - source:
+      kind: ConfigMap
+      name: prometheus-configmap
+      fieldPath: data.domain
+    targets:
+      - select:
+          kind: Ingress
+          name: prometheus-ingress
+        fieldPaths:
+          - spec.rules.0.host

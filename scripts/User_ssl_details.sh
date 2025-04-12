@@ -1,64 +1,31 @@
 #!/bin/bash
 
-# Ask the user if they are installing on a local machine or a cloud instance
-read -p "Are you installing on a local machine or a cloud instance? [local/cloud]: " INSTALL_TYPE
-
-if [ "$INSTALL_TYPE" == "local" ]; then
-    echo "You have chosen to install on a local machine. No SSL configuration is required."
-    echo "Exiting SSL configuration script."
-    exit 0
-fi
-
-# If the user chooses cloud, proceed with SSL configuration
-echo "SSL Configuration:"
-echo "Would you like to use ZeroSSL (requires API token) or Let's Encrypt?"
-echo "[1] ZeroSSL"
-echo "[2] Let's Encrypt"
-read -p "Enter your choice [1-2] (default is [2]): " ssl_choice
-
-case "$ssl_choice" in
-    1 ) 
-        SSL_PROVIDER="zerossl"
-        read -p "Please enter your ZeroSSL API token: " ZEROSSL_API_TOKEN
-        if [ -z "$ZEROSSL_API_TOKEN" ]; then
-            echo "Error: ZeroSSL API token cannot be empty"
-            exit 1
-        fi
-
-        read -p "Please enter your ZeroSSL Key ID: " ZEROSSL_KEY_ID
-        if [ -z "$ZEROSSL_KEY_ID" ]; then
-            echo "Error: ZeroSSL Key ID cannot be empty"
-            exit 1
-        fi
-        ;;
-    2 | "" )
-        SSL_PROVIDER="letsencrypt"
-        ;;
-    * )
-        echo "Invalid choice. Defaulting to Let's Encrypt."
-        SSL_PROVIDER="letsencrypt"
-        ;;
-esac
-
-# Get email and domain information
-read -p "Please enter your email address: " USER_EMAIL
-if [ -z "$USER_EMAIL" ]; then
-    echo "Error: Email address cannot be empty"
-    exit 1
-fi
-
+# Ask the user for domain name
 read -p "Please enter your domain name: " DOMAIN_NAME
 if [ -z "$DOMAIN_NAME" ]; then
     echo "Error: Domain name cannot be empty"
     exit 1
 fi
 
-# Define the config.env file path
+# Validate USER_EMAIL
+if [ -z "$USER_EMAIL" ]; then
+    echo "Error: Email address cannot be empty"
+    exit 1
+fi
+
+# Validate SSL_PROVIDER
+if [ -z "$SSL_PROVIDER" ]; then
+    echo "Error: SSL_PROVIDER is not set. Please choose 'letsencrypt' or 'zerossl'."
+    exit 1
+fi
+
+# Define the config.env file paths
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 ENV_FILE="$SCRIPT_DIR/../deployment/kubeflow/manifests/common/cert-manager/cert-manager/base/config.env"
+MLFLOW_ENV_FILE="$SCRIPT_DIR/../deployment/mlflow/config.env"
 
-# Create the config.env file and save SSL configurations
-echo "Creating config.env file at $ENV_FILE..."
+# Create the config.env file and save SSL configurations in both locations
+echo "Creating config.env file at $ENV_FILE and $MLFLOW_ENV_FILE..."
 {
     echo "SSL_PROVIDER=$SSL_PROVIDER"
     echo "EMAIL=$USER_EMAIL"
@@ -69,4 +36,11 @@ echo "Creating config.env file at $ENV_FILE..."
     fi
 } > "$ENV_FILE"
 
-echo "SSL configuration completed successfully and saved to $ENV_FILE."
+# Save the same content to the mlflow location
+{
+    echo "DOMAIN=$DOMAIN_NAME"
+} > "$MLFLOW_ENV_FILE"
+
+echo "SSL configuration completed successfully and saved to:"
+echo "  - $ENV_FILE"
+echo "  - $MLFLOW_ENV_FILE"

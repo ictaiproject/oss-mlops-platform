@@ -35,6 +35,6 @@ vars:
 
 configMapGenerator:
 - name: cert-manager-config
-  namespace: cert-manager
   envs:
-  - config.env
+  - ./config.env
+  behavior: replace 

@@ -50,3 +50,21 @@ images:
     newTag: 2.0.0-alpha.7
   - name: gcr.io/ml-pipeline/visualization-server
     newTag: 2.0.0-alpha.7
+
+configMapGenerator:
+  - name: mlpipepline-configmap
+    envs:
+      - ./../../../../../common/cert-manager/cert-manager/base/config.env
+    behavior: replace
+
+replacements:
+  - source:
+      kind: ConfigMap
+      name: mlpipepline-configmap
+      fieldPath: data.domain
+    targets:
+      - select:
+          kind: Ingress
+          name: mlpipepline-ingress
+        fieldPaths:
+          - spec.rules.0.host
