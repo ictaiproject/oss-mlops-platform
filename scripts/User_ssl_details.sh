@@ -57,7 +57,11 @@ fi
 ENV_FILE="../deployment/kubeflow/manifests/common/cert-manager/base/config.env"
 MlFLOW_FILE="../deployment/mlflow/base/config.env"
 KUBEFLOW_FILE="../deployment/kubeflow/manifests/apps/pipeline/upstream/base/pipeline/kustomization.yaml"
+GRAFANA_FILE="../deployment/monitoring/grafana/kustomization.yaml"
+PROMETHEUS_FILE="../deployment/monitoring/prometheus/kustomization.yaml"
 # Create the .env file and save SSL configurations
+
+
 echo "Creating config.env file at $ENV_FILE..."
 {
     echo "SSL_PROVIDER=$SSL_PROVIDER"
@@ -68,15 +72,17 @@ echo "Creating config.env file at $ENV_FILE..."
         echo "ZEROSSL_KEY_ID=$ZEROSSL_KEY_ID"
     fi
 } > "$ENV_FILE"
-{
-    echo "Domain=$DOMAIN_NAME"
 
-}> "$MlFLOW_FILE"
-{
-    echo "Domain=$DOMAIN_NAME"
+# Define an array of target files
+TARGET_FILES=("$MlFLOW_FILE" "$KUBEFLOW_FILE" "$GRAFANA_FILE" "$PROMETHEUS_FILE")
 
-}> "$KUBEFLOW_FILE"
-
+# Write the DOMAIN to each target file
+for FILE in "${TARGET_FILES[@]}"; do
+    echo "Writing DOMAIN to $FILE..."
+    {
+        echo "DOMAIN=$DOMAIN_NAME"
+    } > "$FILE"
+done
 
 
 

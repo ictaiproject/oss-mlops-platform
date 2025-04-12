@@ -54,7 +54,7 @@ images:
 configMapGenerator:
   - name: mlpipepline-configmap
     envs:
-      - ./../../../../../common/cert-manager/cert-manager/base/config.env
+      - config.env
     behavior: replace
 
 replacements:

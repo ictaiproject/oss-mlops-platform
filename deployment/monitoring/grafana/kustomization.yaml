@@ -15,7 +15,7 @@ resources:
 configMapGenerator:
   - name: grafana-configmap
     envs:
-      - ./../../mlflow/base/config.env
+      - config.env
     behavior: replace
 
   - name: mlflow-secret

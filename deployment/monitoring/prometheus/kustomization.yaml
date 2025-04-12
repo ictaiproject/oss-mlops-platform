@@ -13,7 +13,7 @@ resources:
 configMapGenerator:
   - name: prometheus-configmap
     envs:
-      - ./../../mlflow/base/config.env
+      - config.env
     behavior: replace
 
 replacements:
