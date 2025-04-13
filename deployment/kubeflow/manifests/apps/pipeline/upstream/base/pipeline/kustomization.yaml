@@ -52,7 +52,7 @@ images:
     newTag: 2.0.0-alpha.7
 
 configMapGenerator:
-  - name: mlpipepline-configmap
+  - name: mlpipepline-ui-configmap-domain
     envs:
       - config.env
     behavior: replace
@@ -60,7 +60,7 @@ configMapGenerator:
 replacements:
   - source:
       kind: ConfigMap
-      name: mlpipepline-configmap
+      name: mlpipepline-ui-configmap-domain
       fieldPath: data.domain
     targets:
       - select:
@@ -68,11 +68,7 @@ replacements:
           name: ml-pipeline-ui-ingress
         fieldPaths:
           - spec.rules.0.host
-      - select:
-          kind: VirtualService
-          name: ml-pipeline-ui-virtual-service
-        fieldPaths:
-          - spec.hosts.0
+      
       - select:
           kind: Service
           name: ml-pipeline-ui-ingress
