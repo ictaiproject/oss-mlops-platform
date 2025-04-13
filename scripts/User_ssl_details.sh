@@ -77,17 +77,12 @@ TARGET_FILES=("$MlFLOW_FILE" "$KUBEFLOW_FILE" "$GRAFANA_FILE" "$PROMETHEUS_FILE"
 
 # Write the DOMAIN to each target file
 for FILE in "${TARGET_FILES[@]}"; do
-    if [ -n "$FILE" ]; then
-        echo "Writing DOMAIN to $FILE..."
-        {
-            echo "DOMAIN=$DOMAIN_NAME"
-        } >> "$FILE" || {
-            echo "Error: Failed to write to $FILE"
-            exit 1
-        }
-    else
-        echo "Warning: Skipping undefined or empty file path."
-    fi
+    echo "Writing DOMAIN to $FILE..."
+    {
+        echo "DOMAIN=$DOMAIN_NAME"
+    } > "$FILE"
 done
+
+
 
 echo "SSL configuration completed successfully and saved to $ENV_FILE."
