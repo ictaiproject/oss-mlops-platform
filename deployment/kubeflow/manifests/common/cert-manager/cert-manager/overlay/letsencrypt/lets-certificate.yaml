@@ -10,4 +10,4 @@ spec:
     name: letsencrypt-prod
     kind: ClusterIssuer
   dnsNames:
-  - ${CERT_MANAGER_DOMAIN}
+  - CERT_MANAGER_DOMAIN

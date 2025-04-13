@@ -65,6 +65,16 @@ replacements:
     targets:
       - select:
           kind: Ingress
-          name: mlpipepline-ingress
+          name: ml-pipeline-ui-ingress
         fieldPaths:
           - spec.rules.0.host
+      - select:
+          kind: VirtualService
+          name: ml-pipeline-ui-virtual-service
+        fieldPaths:
+          - spec.hosts.0
+      - select:
+          kind: Service
+          name: ml-pipeline-ui-ingress
+        fieldPaths:
+          - spec.tls.0.hosts.0

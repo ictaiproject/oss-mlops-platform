@@ -17,21 +17,21 @@ replacements:
   - source:
       kind: ConfigMap
       name: cert-manager-config
-      fieldPath: data.email
+      fieldPath: data.EMAIL
     targets:
       - select:
           kind: ClusterIssuer
-          name: letsencrypt-issuer
+          name: letsencrypt-prod
         fieldPaths:
           - spec.acme.email
 
   - source:
       kind: ConfigMap
       name: cert-manager-config
-      fieldPath: data.domain
+      fieldPath: data.DOMAIN
     targets:
       - select:
           kind: Certificate
-          name: example-certificate
+          name: letsencrypt-cert
         fieldPaths:
           - spec.dnsNames.0

@@ -8,33 +8,32 @@ resources:
 - clusterissuer.yaml
 - certificate.yaml
 
-# Configure variable references
-vars:
-- name: CERT_MANAGER_EMAIL
-  objref:
-    kind: ConfigMap
-    name: cert-manager-config
-    namespace: cert-manager
-  fieldref:
-    fieldpath: data.email
-- name: CERT_MANAGER_DOMAIN
-  objref:
-    kind: ConfigMap
-    name: cert-manager-config
-    namespace: cert-manager
-  fieldref:
-    fieldpath: data.domain
-- name: ZEROSSL_KEY_ID
-  objref:
-    kind: Secret
-    name: zerossl-api-secret
-    namespace: cert-manager
-  fieldref:
-    fieldpath: data.zero_api-id
+secretGenerator:
+  - name: zerossl-api-secret
+    literals:
+      - api-key=${ZEROSSL_API_TOKEN}
 
 
-configMapGenerator:
-- name: cert-manager-config
-  envs:
-  - ./config.env
-  behavior: replace 
+replacements:
+  - source:
+      kind: ConfigMap
+      name: cert-manager-config
+      fieldPath: data.EMAIL
+    targets:
+      - select:
+          kind: ClusterIssuer
+          name: zerossl-prod
+        fieldPaths:
+          - spec.acme.email
+
+  - source:
+      kind: ConfigMap
+      name: cert-manager-config
+      fieldPath: data.DOMAIN
+    targets:
+      - select:
+          kind: Certificate
+          name: zerossl-cert
+        fieldPaths:
+          - spec.dnsNames.0
+  

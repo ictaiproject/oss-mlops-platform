@@ -11,10 +11,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - domain
+        - PLACEHOLDER
       secretName: myapp-cert
   rules:
-    - host: domain
+    - host: PLACEHOLDER
       http:
         paths:
           - path: /prometheus(/|$)(.*)
