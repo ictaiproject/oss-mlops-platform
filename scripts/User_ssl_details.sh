@@ -56,12 +56,12 @@ fi
 # Define the .env file path
 ENV_FILE="../deployment/kubeflow/manifests/common/cert-manager/base/config.env"
 MlFLOW_FILE="../deployment/mlflow/base/config.env"
-KUBEFLOW_FILE="../deployment/kubeflow/manifests/apps/pipeline/upstream/base/pipeline/kustomization.yaml"
-GRAFANA_FILE="../deployment/monitoring/grafana/kustomization.yaml"
-PROMETHEUS_FILE="../deployment/monitoring/prometheus/kustomization.yaml"
+KUBEFLOW_FILE="../deployment/kubeflow/manifests/apps/pipeline/upstream/base/pipeline/config.env"
+GRAFANA_FILE="../deployment/monitoring/grafana/config.env"
+PROMETHEUS_FILE="../deployment/monitoring/prometheus/config.env"
 # Create the .env file and save SSL configurations
 
-
+ßßßß∂ßßß
 echo "Creating config.env file at $ENV_FILE..."
 {
     echo "SSL_PROVIDER=$SSL_PROVIDER"
