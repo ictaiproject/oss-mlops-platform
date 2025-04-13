@@ -61,7 +61,6 @@ GRAFANA_FILE="../deployment/monitoring/grafana/config.env"
 PROMETHEUS_FILE="../deployment/monitoring/prometheus/config.env"
 # Create the .env file and save SSL configurations
 
-ßßßß∂ßßß
 echo "Creating config.env file at $ENV_FILE..."
 {
     echo "SSL_PROVIDER=$SSL_PROVIDER"
@@ -78,12 +77,17 @@ TARGET_FILES=("$MlFLOW_FILE" "$KUBEFLOW_FILE" "$GRAFANA_FILE" "$PROMETHEUS_FILE"
 
 # Write the DOMAIN to each target file
 for FILE in "${TARGET_FILES[@]}"; do
-    echo "Writing DOMAIN to $FILE..."
-    {
-        echo "DOMAIN=$DOMAIN_NAME"
-    } > "$FILE"
+    if [ -n "$FILE" ]; then
+        echo "Writing DOMAIN to $FILE..."
+        {
+            echo "DOMAIN=$DOMAIN_NAME"
+        } >> "$FILE" || {
+            echo "Error: Failed to write to $FILE"
+            exit 1
+        }
+    else
+        echo "Warning: Skipping undefined or empty file path."
+    fi
 done
-
-
 
 echo "SSL configuration completed successfully and saved to $ENV_FILE."
