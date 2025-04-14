@@ -1,7 +1,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
 bases:
   - metadata-writer
+
 resources:
   - ml-pipeline-apiserver-deployment.yaml
   - ml-pipeline-apiserver-role.yaml
@@ -37,6 +39,7 @@ resources:
   - kfp-launcher-configmap.yaml
   - ml-pipeline-ui-ingress.yaml
   - ml-pipeline-ui-virtual-service.yaml
+
 images:
   - name: gcr.io/ml-pipeline/api-server
     newTag: 2.0.0-alpha.7
@@ -52,7 +55,7 @@ images:
     newTag: 2.0.0-alpha.7
 
 configMapGenerator:
-  - name: mlpipepline-ui-configmap-domain
+  - name: mlpipeline-ui-configmap-domain
     envs:
       - config.env
     behavior: replace
@@ -60,7 +63,7 @@ configMapGenerator:
 replacements:
   - source:
       kind: ConfigMap
-      name: mlpipepline-ui-configmap-domain
+      name: mlpipeline-ui-configmap-domain
       fieldPath: data.domain
     targets:
       - select:
@@ -68,7 +71,11 @@ replacements:
           name: ml-pipeline-ui-ingress
         fieldPaths:
           - spec.rules.0.host
-      
+      - select:
+          kind: VirtualService
+          name: ml-pipeline-ui-virtual-service
+        fieldPaths:
+          - spec.hosts.0
       - select:
           kind: Service
           name: ml-pipeline-ui-ingress
