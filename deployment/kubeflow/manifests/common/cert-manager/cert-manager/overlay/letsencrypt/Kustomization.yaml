@@ -4,34 +4,34 @@ kind: Kustomization
 namespace: cert-manager
 
 resources:
-  - clusterissuer.yaml
-  - certificate.yaml
+- clusterissuer.yaml
+- certificate.yaml
 
 configMapGenerator:
-  - name: cert-manager-config
-    envs:
-      - ./../../base/config.env
-    behavior: replace
+- name: cert-manager-config
+  envs:
+  - ./../../base/config.env
+  behavior: replace
 
 replacements:
-  - source:
-      kind: ConfigMap
-      name: cert-manager-config
-      fieldPath: data.EMAIL
-    targets:
-      - select:
-          kind: ClusterIssuer
-          name: letsencrypt-prod
-        fieldPaths:
-          - spec.acme.email
+- source:
+    kind: ConfigMap
+    name: cert-manager-config
+    fieldPath: data.EMAIL
+  targets:
+  - select:
+      kind: ClusterIssuer
+      name: letsencrypt-prod
+    fieldPaths:
+    - spec.acme.email
 
-  - source:
-      kind: ConfigMap
-      name: cert-manager-config
-      fieldPath: data.DOMAIN
-    targets:
-      - select:
-          kind: Certificate
-          name: letsencrypt-cert
-        fieldPaths:
-          - spec.dnsNames.0
+- source:
+    kind: ConfigMap
+    name: cert-manager-config
+    fieldPath: data.DOMAIN
+  targets:
+  - select:
+      kind: Certificate
+      name: letsencrypt-cert
+    fieldPaths:
+    - spec.dnsNames.0

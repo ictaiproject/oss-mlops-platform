@@ -8,5 +8,9 @@ resources:
 - configmap.yaml
 - cert-manager.yaml
 
-
-
+# kustomization.yaml
+configMapGenerator:
+- name: cert-manager-config
+  namespace: cert-manager
+  envs:
+  - config.env

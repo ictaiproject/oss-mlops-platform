@@ -11,33 +11,40 @@ resources:
 - prometheus-virtualservice.yaml
 
 configMapGenerator:
-  - name: prometheus-configmap-domain
-    envs:
-      - config.env
-    
+- name: prometheus-configmap-domain
+  envs:
+  - config.env
+
 secretGenerator:
-  - name: prometheus-secret
-    literals:
-      - DB_PASSWORD=KFSg-AYoiPdfRun64z2-w89Kk7z5cJL2IbVvSd3l8Og
+- name: prometheus-secret
+  literals:
+  - DB_PASSWORD=KFSg-AYoiPdfRun64z2-w89Kk7z5cJL2IbVvSd3l8Og
 
 replacements:
-  - source:
-      kind: ConfigMap
-      name: prometheus-configmap-domain
-      fieldPath: data.DOMAIN
-    targets:
-      - select:
-          kind: Ingress
-          name: prometheus-ingress
-        fieldPaths:
-          - spec.rules.0.host
-      - select:
-          kind: VirtualService
-          name: prometheus-virtualservice
-        fieldPaths:
-          - spec.hosts.0
-      - select:
-          kind: Service
-          name: prometheus-ingress
-        fieldPaths:
-          - spec.tls.0.hosts.0
+- source:
+    kind: ConfigMap
+    name: prometheus-configmap-domain
+    fieldPath: data.DOMAIN
+  targets:
+  - select:
+      kind: Ingress
+      name: prometheus-ingress
+    fieldPaths:
+    - spec.rules.0.host
+  - select:
+      kind: VirtualService
+      name: prometheus-virtualservice
+    fieldPaths:
+    - spec.hosts.0
+  - select:
+      kind: Service
+      name: prometheus-ingress
+    fieldPaths:
+    - spec.tls.0.hosts.0
+
+  - select:
+      kind: VirtualService
+      name: grafana
+    fieldPaths:
+    - spec.http.0.route.0.headers.response.set.Access-Control-Allow-Origin
+    - spec.http.0.corsPolicy.allowOrigins.0.exact
