@@ -23,7 +23,7 @@ configMapGenerator:
 replacements:
   - source:
       kind: ConfigMap
-      name: grafana-configmap
+      name: grafana-configmap-domain
       fieldPath: data.DOMAIN
     targets:
       - select:
