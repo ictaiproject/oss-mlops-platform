@@ -4,7 +4,7 @@ metadata:
   name: prometheus-server-conf
   labels:
     name: prometheus-server-conf
-
+data:
   prometheus.rules: |-
     groups:
     - name: devopscube demo alert
@@ -18,16 +18,11 @@ metadata:
           summary: High Memory Usage
 
   prometheus.yml: |-
-    # my global config
     global:
-      scrape_interval:     15s # By default, scrape targets every 15 seconds.
-      evaluation_interval: 15s # By default, scrape targets every 15 seconds.
-      # scrape_timeout is set to the global default (10s).
-    
-    # Load and evaluate rules in this file every 'evaluation_interval' seconds.
+      scrape_interval:     15s
+      evaluation_interval: 15s
     rule_files:
       - /etc/prometheus/prometheus.rules
-    
     alerting:
       alertmanagers:
       - scheme: http
@@ -35,24 +30,12 @@ metadata:
         - targets:
           - "alertmanager.monitoring.svc:9093"
 
-    # A scrape configuration containing exactly one endpoint to scrape:
     scrape_configs:
-      # Here it's Prometheus itself.
-      # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
-    
       - job_name: 'prometheus'
-    
-        # Override the global default and scrape targets from this job every 5 seconds.
         scrape_interval: 5s
-    
         static_configs:
-             - targets: ['localhost:9090']
-    
-        #- job_name: 'prometheus-pushgateway'
-        #  scrape_interval: 10s
-        #  static_configs:
-        #    - targets: ['http://prometheus-pushgateway.monitoring.svc.cluster.local:9091']
-    
+          - targets: ['localhost:9090']
+
       - job_name: 'k8services'
         kubernetes_sd_configs:
         - role: endpoints
@@ -68,7 +51,7 @@ metadata:
           action: keep
         - source_labels: [__meta_kubernetes_service_name]
           target_label: job
-    
+
       - job_name: 'k8pods'
         kubernetes_sd_configs:
         - role: pod
@@ -78,7 +61,7 @@ metadata:
           action: keep
         - source_labels: [__meta_kubernetes_pod_container_name]
           target_label: job
-    
+
       - job_name: 'node-exporter'
         kubernetes_sd_configs:
           - role: endpoints
@@ -87,34 +70,25 @@ metadata:
           regex: 'node-exporter'
           action: keep
 
-      # Collects all the metrics from the API servers
       - job_name: 'kubernetes-apiservers'
-
         kubernetes_sd_configs:
         - role: endpoints
         scheme: https
-
         tls_config:
           ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
         bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-
         relabel_configs:
         - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
           action: keep
           regex: default;kubernetes;https
 
-      # Collects all the kubernetes node metrics
       - job_name: 'kubernetes-nodes'
-
         scheme: https
-
         tls_config:
           ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
         bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-
         kubernetes_sd_configs:
         - role: node
-
         relabel_configs:
         - action: labelmap
           regex: __meta_kubernetes_node_label_(.+)
@@ -123,15 +97,11 @@ metadata:
         - source_labels: [__meta_kubernetes_node_name]
           regex: (.+)
           target_label: __metrics_path__
-          replacement: /api/v1/nodes/${1}/proxy/metrics     
+          replacement: /api/v1/nodes/${1}/proxy/metrics
 
-      # Pod metrics will get discovered and scraped if the pod metadata is annotated
-      # with prometheus.io/scrape and prometheus.io/port annotations.
       - job_name: 'kubernetes-pods'
-
         kubernetes_sd_configs:
         - role: pod
-
         relabel_configs:
         - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
           action: keep
@@ -154,18 +124,13 @@ metadata:
           action: replace
           target_label: kubernetes_pod_name
 
-      # Collects all cAdvisor metrics
       - job_name: 'kubernetes-cadvisor'
-
         scheme: https
-
         tls_config:
           ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
         bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-
         kubernetes_sd_configs:
         - role: node
-
         relabel_configs:
         - action: labelmap
           regex: __meta_kubernetes_node_label_(.+)
@@ -176,13 +141,9 @@ metadata:
           target_label: __metrics_path__
           replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
 
-      # Scrapes Service endpoints if the service metadata is annotated
-      # with prometheus.io/scrape and prometheus.io/port annotations
       - job_name: 'kubernetes-service-endpoints'
-
         kubernetes_sd_configs:
         - role: endpoints
-
         relabel_configs:
         - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
           action: keep
