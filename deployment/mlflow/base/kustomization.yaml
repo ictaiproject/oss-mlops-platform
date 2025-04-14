@@ -26,15 +26,15 @@ replacements:
     fieldPath: data.DOMAIN
   targets:
   - select:
-      kind: VirtualService
-      name: mlflow-virtual-service
+      kind: Ingress
+      name: mlflow-ingress
     fieldPaths:
-    - spec.rules.0.host
+    - spec.hosts.0
     - spec.tls.0.hosts.0
 
   - select:
       kind: VirtualService
-      name: grafana
+      name: mlflow-virtual-service
     fieldPaths:
     - spec.http.0.route.0.headers.response.set.Access-Control-Allow-Origin
     - spec.http.0.corsPolicy.allowOrigins.0.exact
