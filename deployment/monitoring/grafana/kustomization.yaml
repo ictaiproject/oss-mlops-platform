@@ -26,20 +26,10 @@ replacements:
       name: grafana-ingress
     fieldPaths:
     - spec.rules.0.host
-  - select:
-      kind: VirtualService
-      name: grafana-virtualservice
-    fieldPaths:
-    - spec.hosts.0
-  - select:
-      kind: Service
-      name: grafana-ingress
-    fieldPaths:
     - spec.tls.0.hosts.0
-
   - select:
       kind: VirtualService
-      name: grafana
+      name: grafana-virtual-service
     fieldPaths:
     - spec.http.0.route.0.headers.response.set.Access-Control-Allow-Origin
     - spec.http.0.corsPolicy.allowOrigins.0.exact

@@ -4,7 +4,6 @@ metadata:
   name: grafana-root-url-config
   namespace: monitoring
 data:
-  DOMAIN: ${DOMAIN}
   grafana.ini: |
     [server]
     domain = mlops.local
