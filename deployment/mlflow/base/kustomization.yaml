@@ -29,8 +29,9 @@ replacements:
       kind: VirtualService
       name: mlflow-virtual-service
     fieldPaths:
-    - spec.hosts.0
+    - spec.rules.0.host
     - spec.tls.0.hosts.0
+
   - select:
       kind: VirtualService
       name: grafana
