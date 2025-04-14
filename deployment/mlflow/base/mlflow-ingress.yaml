@@ -11,10 +11,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - PLACEHOLDER
+        - DOMAIN
       secretName: myapp-cert
   rules:
-    - host: PLACEHOLDER
+    - host: DOMAIN
       http:
         paths:
           - path: /mlflow(/|$)(.*)

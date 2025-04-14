@@ -11,7 +11,7 @@ resources:
 - prometheus-virtualservice.yaml
 
 configMapGenerator:
-  - name: prometheus-configmap
+  - name: prometheus-configmap-domain
     envs:
       - config.env
     behavior: replace
@@ -24,7 +24,7 @@ secretGenerator:
 replacements:
   - source:
       kind: ConfigMap
-      name: prometheus-configmap
+      name: prometheus-configmap-domain
       fieldPath: data.DOMAIN
     targets:
       - select:

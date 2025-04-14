@@ -4,7 +4,7 @@ metadata:
   name: prometheus-server-conf
   labels:
     name: prometheus-server-conf
-data:
+
   prometheus.rules: |-
     groups:
     - name: devopscube demo alert
