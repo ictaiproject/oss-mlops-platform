@@ -6,11 +6,17 @@ resources:
 - grafana-service.yaml
 - grafana-datasource-config.yaml
 - grafana-pvc.yaml
-- dashboards-configmap.yaml
+- dashboards-config-map.yaml
 - dashboards-json-config-map.yaml
 - grafana-ingress.yaml
 - grafana-virtualservice.yaml
 
+
+configMapGenerator:
+  - name: grafana-configmap-domain
+    envs:
+      - config.env
+    
 
 
 
