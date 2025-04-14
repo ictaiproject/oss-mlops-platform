@@ -13,7 +13,7 @@ configMapGenerator:
   - name: mlflow-configmap
     envs:
       - config.env
-    behavior: replace
+    
 
 secretGenerator:
   - name: mlflow-secret

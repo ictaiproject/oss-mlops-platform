@@ -14,8 +14,7 @@ configMapGenerator:
   - name: prometheus-configmap-domain
     envs:
       - config.env
-    behavior: replace
-
+    
 secretGenerator:
   - name: prometheus-secret
     literals:
