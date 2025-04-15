@@ -13,17 +13,17 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   tls:
-    - hosts:
-        - DOMAIN
-      secretName: myapp-cert
+  - hosts:
+    - DOMAIN
+    secretName: myapp-cert
   rules:
-    - host: DOMAIN
-      http:
-        paths:
-          - path: /mlpipeline(/|$)(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: ml-pipeline-ui
-                port:
-                  number: 3000
+  - host: DOMAIN
+    http:
+      paths:
+      - path: /mlpipeline(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: ml-pipeline-ui
+            port:
+              number: 3000
