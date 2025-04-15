@@ -54,10 +54,15 @@ images:
 - name: gcr.io/ml-pipeline/visualization-server
   newTag: 2.0.0-alpha.7
 
+configMapGenerator:
+- name: ml-pipeline-ui-configmap-domain
+  envs:
+  - config.env
+
 replacements:
 - source:
     kind: ConfigMap
-    name: ml-pipeline-ui-configmap
+    name: ml-pipeline-ui-configmap-domain
     fieldPath: data.DOMAIN
   targets:
   - select:
