@@ -43,11 +43,11 @@ echo "✅ SSL configuration completed successfully."
 
 # Apply the selected configuration
 if [ -z "$SSL_PROVIDER" ]; then
-  echo "❌ SSL_PROVIDER is not set. Please set it to 'letsencrypt' or 'zerossl' in your config.env file."
+  echo "❌ $SSL_PROVIDER is not set. Please set it to 'letsencrypt' or 'zerossl' in your config.env file."
   exit 1
 fi
 
-CA_DIR="./deployment/kubeflow/manifests/common/cert-manager/overlay/$SSL_PROVIDER"
+CA_DIR="./deployment/kubeflow/manifests/common/cert-manager/cert-manger/overlay/$SSL_PROVIDER"
 echo "Applying certificate configuration from $CA_DIR..."
 kubectl apply -k "$CA_DIR"
 
