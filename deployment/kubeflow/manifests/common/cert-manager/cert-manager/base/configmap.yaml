@@ -4,4 +4,4 @@ metadata:
   name: cert-manager-ca-config
   namespace: cert-manager
 data:
-  selected-ca: "zerossl" # Default value, will be replaced by the script
+  SSL_PROVIDER: "zerossl" # Default value, will be replaced by the script

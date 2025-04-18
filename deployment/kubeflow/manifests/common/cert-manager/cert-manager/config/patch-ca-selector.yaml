@@ -8,15 +8,15 @@ patch: |
   metadata:
     name: patch-overlay
   resources:
-  - ../overlays/$(SELECTED_CA)
+  - ../overlays/$(SSL_PROVIDER)
 target:
   kind: Kustomization
   name: .*
 vars:
-- name: SELECTED_CA
+- name: SSL_PROVIDER
   objref:
     apiVersion: v1
     kind: ConfigMap
     name: cert-manager-ca-config
   fieldref:
-    fieldpath: data.selected-ca
+    fieldpath: data.SSL_PROVIDER

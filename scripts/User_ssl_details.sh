@@ -59,7 +59,7 @@ if [ -z "$DOMAIN_NAME" ]; then
 fi
 
 # Define the config.env file paths
-ENV_FILE="$SCRIPT_DIR/../deployment/kubeflow/manifests/common/cert-manager/cert-manager/config.env"
+ENV_FILE="$SCRIPT_DIR/../deployment/kubeflow/manifests/common/cert-manager/cert-manager/base/config.env"
 MlFLOW_FILE="$SCRIPT_DIR/../deployment/mlflow/base/config.env"
 KUBEFLOW_FILE="$SCRIPT_DIR/../deployment/kubeflow/manifests/apps/pipeline/upstream/base/pipeline/config.env"
 GRAFANA_FILE="$SCRIPT_DIR/../deployment/monitoring/grafana/config.env"
