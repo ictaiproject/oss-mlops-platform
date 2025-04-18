@@ -33,7 +33,7 @@ fi
 # filepath: /Users/ayushghimire/Documents/GitHub/oss-mlops-platform/scripts/delete_ssl_config_files.sh
 
 # Define the paths of the files to delete
-ENV_FILE="$SCRIPT_DIR/deployment/kubeflow/manifests/common/cert-manager/base/config.env"
+ENV_FILE="$SCRIPT_DIR/deployment/kubeflow/manifests/common/cert-manager/config.env"
 MlFLOW_FILE="$SCRIPT_DIR/deployment/mlflow/base/config.env"
 KUBEFLOW_FILE="$SCRIPT_DIR/deployment/kubeflow/manifests/apps/pipeline/upstream/base/pipeline/config.env"
 GRAFANA_FILE="$SCRIPT_DIR/deployment/monitoring/grafana/config.env"
