@@ -47,8 +47,6 @@ if [ -z "$SSL_PROVIDER" ]; then
   exit 1
 fi
 
-CA_DIR="./deployment/kubeflow/manifests/common/cert-manager/cert-manger/overlay/$SSL_PROVIDER"
-echo "Applying certificate configuration from $CA_DIR..."
-kubectl apply -k "$CA_DIR"
+
 
 echo "✅ Certificate authority setup complete!"

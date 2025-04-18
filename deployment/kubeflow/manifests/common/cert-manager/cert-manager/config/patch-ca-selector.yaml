@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: PatchTransformer
+metadata:
+  name: patch-ca-selector
+patch: |
+  apiVersion: kustomize.config.k8s.io/v1beta1
+  kind: Kustomization
+  metadata:
+    name: patch-overlay
+  resources:
+  - ../overlays/$(SELECTED_CA)
+target:
+  kind: Kustomization
+  name: .*
+vars:
+- name: SELECTED_CA
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: cert-manager-ca-config
+  fieldref:
+    fieldpath: data.selected-ca
