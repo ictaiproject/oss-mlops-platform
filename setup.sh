@@ -156,7 +156,7 @@ if [[ "$(uname)" == "Darwin" ]]; then
   
 else
   /bin/bash "$SCRIPT_DIR/scripts/User_ssl_details.sh"
-  bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"
+  
   /bin/bash "$SCRIPT_DIR/scripts/install_tools.sh"
   # Removed the early call to Kubernetes_ssl_configmap_creation.sh here
   
@@ -184,6 +184,7 @@ if kind get clusters | grep -q "^$CLUSTER_NAME$"; then
 else
     echo "Creating kind cluster..."
     /bin/bash "$SCRIPT_DIR/scripts/create_cluster.sh"
+    /bin/bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"
 fi
 
 kubectl cluster-info --context kind-$CLUSTER_NAME
