@@ -9,11 +9,6 @@ resources:
 - mlflow-virtualservice.yaml
 - mlflow-ingress.yaml
 
-configMapGenerator:
-- name: mlflow-configmap
-  envs:
-  - config.env
-
 secretGenerator:
 - name: mlflow-secret
   literals:
@@ -22,7 +17,7 @@ secretGenerator:
 replacements:
 - source:
     kind: ConfigMap
-    name: mlflow-configmap
+    name: ssl-config
     fieldPath: data.DOMAIN
   targets:
   - select:

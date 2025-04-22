@@ -16,7 +16,7 @@ secretGenerator:
 replacements:
 - source:
     kind: ConfigMap
-    name: cert-manager-config
+    name: ssl-config
     fieldPath: data.EMAIL
   targets:
   - select:
@@ -27,7 +27,7 @@ replacements:
 
 - source:
     kind: ConfigMap
-    name: cert-manager-config
+    name: ssl-config
     fieldPath: data.DOMAIN
   targets:
   - select:

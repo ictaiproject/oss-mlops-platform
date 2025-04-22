@@ -6,9 +6,3 @@ resources:
 - cert-manager.yaml
 
 # Include the appropriate overlay based on ConfigMap
-
-
-configMapGenerator:
-- name: cert-manager-config
-  envs:
-  - config.env
