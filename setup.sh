@@ -187,7 +187,7 @@ else
 fi
 
 kubectl cluster-info --context kind-$CLUSTER_NAME
-kubectl config use-context kind-$CLUSTER_NAME
+
 
 if [ "$INSTALL_TYPE" = "cloud" ]; then
     /bin/bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"
