@@ -96,3 +96,26 @@ for FILE in "${TARGET_FILES[@]}"; do
 done
 
 echo "SSL configuration completed successfully and saved to $ENV_FILE and target files."
+
+# Create config.env file
+cat > "$CONFIG_ENV" <<EOF
+SSL_PROVIDER=$SSL_PROVIDER
+EMAIL=$USER_EMAIL
+DOMAIN=$DOMAIN_NAME
+EOF
+
+
+cat > "$CONFIGMAP_YAML" <<EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ssl-config
+  namespace: cert-manager
+data:
+  SSL_PROVIDER: "$SSL_PROVIDER"
+  EMAIL: "$USER_EMAIL"
+  DOMAIN: "$DOMAIN_NAME"
+EOF
+
+echo "Created $CONFIGMAP_YAML:"
+cat "$CONFIGMAP_YAML"

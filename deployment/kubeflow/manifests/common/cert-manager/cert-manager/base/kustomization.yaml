@@ -13,6 +13,3 @@ configMapGenerator:
 - name: cert-manager-config
   envs:
   - config.env
-
-patches:
-- path: ../config/patch-ca-selector.yaml

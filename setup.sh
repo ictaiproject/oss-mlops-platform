@@ -156,6 +156,7 @@ if [[ "$(uname)" == "Darwin" ]]; then
   
 else
   /bin/bash "$SCRIPT_DIR/scripts/User_ssl_details.sh"
+  bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"
   /bin/bash "$SCRIPT_DIR/scripts/install_tools.sh"
   # Removed the early call to Kubernetes_ssl_configmap_creation.sh here
   
@@ -244,13 +245,3 @@ echo
 
 echo "Running Kubernetes SSL configuration..."
 
-# Now run the Kubernetes SSL configuration script after everything else
-if [[ "$(uname)" == "Darwin" ]]; then
-  bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"
-else
-  /bin/bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"
-fi
-
-echo "✅ Kubernetes SSL configuration completed!"
-
-exit 0
