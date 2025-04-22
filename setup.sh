@@ -184,12 +184,14 @@ if kind get clusters | grep -q "^$CLUSTER_NAME$"; then
 else
     echo "Creating kind cluster..."
     /bin/bash "$SCRIPT_DIR/scripts/create_cluster.sh"
-    if [ "$INSTALL_TYPE" = "cloud" ]; then
-        /bin/bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"
-    fi
 fi
 
 kubectl cluster-info --context kind-$CLUSTER_NAME
+kubectl config use-context kind-$CLUSTER_NAME
+
+if [ "$INSTALL_TYPE" = "cloud" ]; then
+    /bin/bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"
+fi
 
 # DEPLOY LOCAL DOCKER REGISTRY
 if [ "$INSTALL_LOCAL_REGISTRY" = true ]; then
