@@ -4,8 +4,8 @@ kind: Kustomization
 namespace: cert-manager
 
 resources:
-- letsencrypt-clusterissuer.yaml
-- letsencrypt-certificate.yaml
+- lets-clusterissuer.yaml
+- lets-certificate.yaml
 
 replacements:
 - source:
