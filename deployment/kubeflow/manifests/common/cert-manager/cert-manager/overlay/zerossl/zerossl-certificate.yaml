@@ -5,10 +5,9 @@ metadata:
   name: zerossl-cert
   namespace: cert-manager
 spec:
-  secretName: zerossl-tls
+  secretName: myapp-cert
   issuerRef:
     name: zerossl-prod
     kind: ClusterIssuer
   dnsNames:
   - ${CERT_MANAGER_DOMAIN}
-  

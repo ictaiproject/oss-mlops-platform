@@ -4,14 +4,8 @@ kind: Kustomization
 namespace: cert-manager
 
 resources:
-- clusterissuer.yaml
-- certificate.yaml
-
-configMapGenerator:
-- name: cert-manager-config
-  envs:
-  - ./../../base/config.env
-  behavior: replace
+- letsencrypt-clusterissuer.yaml
+- letsencrypt-certificate.yaml
 
 replacements:
 - source:
