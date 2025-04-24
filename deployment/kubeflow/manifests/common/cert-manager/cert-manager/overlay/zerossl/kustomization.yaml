@@ -13,6 +13,10 @@ secretGenerator:
   literals:
   - api-key=${ZEROSSL_API_TOKEN}
 
+configMapGenerator:
+- name: cert-manager-config
+  envs:
+  - ../base/config.env # or the correct relative path
 replacements:
 - source:
     kind: ConfigMap

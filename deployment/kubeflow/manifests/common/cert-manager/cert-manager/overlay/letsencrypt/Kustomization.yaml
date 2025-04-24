@@ -4,13 +4,18 @@ kind: Kustomization
 namespace: cert-manager
 
 resources:
-- lets-clusterissuer.yaml
-- lets-certificate.yaml
+- letsclusterissuer.yaml
+- letscertificate.yaml
+
+configMapGenerator:
+- name: cert-manager-config
+  envs:
+  - ../base/config.env # or the correct relative path 
 
 replacements:
 - source:
     kind: ConfigMap
-    name: ssl-config
+    name: cert-manager-config
     fieldPath: data.EMAIL
   targets:
   - select:
@@ -21,7 +26,7 @@ replacements:
 
 - source:
     kind: ConfigMap
-    name: ssl-config
+    name: cert-manager-config
     fieldPath: data.DOMAIN
   targets:
   - select:
