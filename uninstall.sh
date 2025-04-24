@@ -29,5 +29,31 @@ if [ "$INSTALL_LOCAL_REGISTRY" = "true" ]; then
 fi
 
 
+ENV_FILE="$SCRIPT_DIR/deployment/kubeflow/manifests/common/cert-manager/config.env"
+MlFLOW_FILE="$SCRIPT_DIR/deployment/mlflow/base/config.env"
+KUBEFLOW_FILE="$SCRIPT_DIR/deployment/kubeflow/manifests/apps/pipeline/upstream/base/pipeline/config.env"
+GRAFANA_FILE="$SCRIPT_DIR/deployment/monitoring/grafana/config.env"
+PROMETHEUS_FILE="$SCRIPT_DIR/deployment/monitoring/prometheus/config.env"
+
+# Define an array of target files
+TARGET_FILES=("$ENV_FILE" "$MlFLOW_FILE" "$KUBEFLOW_FILE" "$GRAFANA_FILE" "$PROMETHEUS_FILE")
+
+# Delete each file
+for FILE in "${TARGET_FILES[@]}"; do
+    if [ -f "$FILE" ]; then
+        echo "Deleting $FILE..."
+        rm -f "$FILE" || {
+            echo "Error: Failed to delete $FILE"
+            exit 1
+        }
+    else
+        echo "File $FILE does not exist. Skipping."
+    fi
+done
+
+echo "All specified SSL configuration files have been deleted."
+
+rm -rf "$PLATFORM_DIR"
+
 echo "The platform has been successfully uninstalled."
 exit 0
