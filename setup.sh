@@ -155,7 +155,7 @@ if [[ "$(uname)" == "Darwin" ]]; then
   # Removed the early call to Kubernetes_ssl_configmap_creation.sh here
   
 else
-  /bin/bash "$SCRIPT_DIR/scripts/User_ssl_details.sh"
+  /bin/bash "$SCRIPT_DIR/scripts/SSL_Details.sh"
   
   /bin/bash "$SCRIPT_DIR/scripts/install_tools.sh"
   # Removed the early call to Kubernetes_ssl_configmap_creation.sh here
@@ -195,7 +195,7 @@ fi
 
 # DEPLOY LOCAL DOCKER REGISTRY
 if [ "$INSTALL_LOCAL_REGISTRY" = true ]; then
-  /bin/bash "$SCRIPT_DIR/scripts/install_local_registry.sh"
+  /bin/bash "$SCRIPT_DIR/scripts/SSL_Creation.sh"
 fi
 
 # DEPLOY STACK
