@@ -150,7 +150,7 @@ fi
 # INSTALL TOOLS
 if [[ "$(uname)" == "Darwin" ]]; then
   
-  bash "$SCRIPT_DIR/scripts/User_ssl_details.sh"  # Using default bash because /bin/bash is an old version (3)
+  bash "$SCRIPT_DIR/scripts/SSL_Details.sh"  # Using default bash because /bin/bash is an old version (3)
   bash "$SCRIPT_DIR/scripts/install_tools_mac.sh"
   # Removed the early call to Kubernetes_ssl_configmap_creation.sh here
   
@@ -190,12 +190,12 @@ kubectl cluster-info --context kind-$CLUSTER_NAME
 
 
 if [ "$INSTALL_TYPE" = "cloud" ]; then
-    /bin/bash "$SCRIPT_DIR/scripts/Kubernetes_ssl_configmap_creation.sh"
+    /bin/bash "$SCRIPT_DIR/scripts/SSL_Creation.sh"
 fi
 
 # DEPLOY LOCAL DOCKER REGISTRY
 if [ "$INSTALL_LOCAL_REGISTRY" = true ]; then
-  /bin/bash "$SCRIPT_DIR/scripts/SSL_Creation.sh"
+  /bin/bash "$SCRIPT_DIR/scripts/install_local_registry.sh"
 fi
 
 # DEPLOY STACK
