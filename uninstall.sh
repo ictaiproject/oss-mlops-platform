@@ -2,6 +2,7 @@
 
 set -eoa pipefail
 
+
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 PLATFORM_DIR="$SCRIPT_DIR/.platform"
 PLATFORM_CONFIG="$PLATFORM_DIR/.config"

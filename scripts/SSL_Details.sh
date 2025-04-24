@@ -77,6 +77,8 @@ set_config_var() {
         echo "${key}=${value}" >> "$CONFIG_ENV"
     fi
 }
+
+
 set_config_var "INSTALL_TYPE" "$INSTALL_TYPE"
 set_config_var "SSL_PROVIDER" "$SSL_PROVIDER"
 set_config_var "EMAIL" "$USER_EMAIL"
@@ -85,18 +87,41 @@ set_config_var "INSTALL_TYPE" "$INSTALL_TYPE"
 
 EOF
 
-# Create a general-purpose ConfigMap (no namespace specified)
-kubectl apply -f - <<EOF
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: ssl-config
-data:
-  SSL_PROVIDER: "$SSL_PROVIDER"
-  EMAIL: "$USER_EMAIL"
-  DOMAIN: "$DOMAIN_NAME"
-EOF
+# Define the config.env file paths
+ENV_FILE="$SCRIPT_DIR/../deployment/kubeflow/manifests/common/cert-manager/cert-manager/base/config.env"
+MlFLOW_FILE="$SCRIPT_DIR/../deployment/mlflow/base/config.env"
+KUBEFLOW_FILE="$SCRIPT_DIR/../deployment/kubeflow/manifests/apps/pipeline/upstream/base/pipeline/config.env"
+GRAFANA_FILE="$SCRIPT_DIR/../deployment/monitoring/grafana/config.env"
+PROMETHEUS_FILE="$SCRIPT_DIR/../deployment/monitoring/prometheus/config.env"
 
-echo "General-purpose ConfigMap 'ssl-config' applied (default namespace)."
+# Create the config.env file and save SSL configurations
+echo "Creating config.env file at $ENV_FILE..."
+{
+    echo "SSL_PROVIDER=$SSL_PROVIDER"
+    echo "EMAIL=$USER_EMAIL"
+    echo "DOMAIN=$DOMAIN_NAME"
+    if [ "$SSL_PROVIDER" == "zerossl" ]; then
+        echo "ZEROSSL_API_TOKEN=$ZEROSSL_API_TOKEN"
+        echo "ZEROSSL_KEY_ID=$ZEROSSL_KEY_ID"
+    fi
+} > "$ENV_FILE"
 
+# Define an array of target files
+TARGET_FILES=("$MlFLOW_FILE" "$KUBEFLOW_FILE" "$GRAFANA_FILE" "$PROMETHEUS_FILE")
 
+# Write the DOMAIN to each target file
+for FILE in "${TARGET_FILES[@]}"; do
+    if [ -n "$FILE" ]; then
+        echo "Writing DOMAIN to $FILE..."
+        {
+            echo "DOMAIN=$DOMAIN_NAME"
+        } > "$FILE" || {
+            echo "Error: Failed to write to $FILE"
+            exit 1
+        }
+    else
+        echo "Warning: Skipping undefined or empty file path."
+    fi
+done
+
+echo "SSL configuration completed successfully and saved to $ENV_FILE and target files."

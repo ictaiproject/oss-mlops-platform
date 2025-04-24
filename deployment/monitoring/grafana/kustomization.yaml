@@ -10,10 +10,15 @@ resources:
 - grafana-ingress.yaml
 - grafana-virtualservice.yaml
 
+configMapGenerator:
+- name: grafana-configmap-domain
+  envs:
+  - config.env
+
 replacements:
 - source:
     kind: ConfigMap
-    name: ssl-config
+    name: grafana-configmap-domain
     fieldPath: data.DOMAIN
   targets:
   - select:

@@ -10,6 +10,11 @@ resources:
 - prometheus-ingress.yaml
 - prometheus-virtualservice.yaml
 
+configMapGenerator:
+- name: prometheus-configmap-domain
+  envs:
+  - config.env
+
 secretGenerator:
 - name: prometheus-secret
   literals:
@@ -18,7 +23,7 @@ secretGenerator:
 replacements:
 - source:
     kind: ConfigMap
-    name: ssl-config
+    name: prometheus-configmap-domain
     fieldPath: data.DOMAIN
   targets:
   - select:

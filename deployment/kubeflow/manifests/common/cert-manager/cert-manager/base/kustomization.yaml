@@ -1,8 +1,40 @@
-# kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-- cert-manager.yaml
+- mlflow-namespace.yaml
+- mlflow-deployment.yaml
+- mlflow-service.yaml
+- mlflow-sa.yaml
+- mlflow-virtualservice.yaml
+- mlflow-ingress.yaml
 
-# Include the appropriate overlay based on ConfigMap
+configMapGenerator:
+- name: mlflow-configmap
+  envs:
+  - config.env
+
+secretGenerator:
+- name: mlflow-secret
+  literals:
+  - DB_PASSWORD=KFSg-AYoiPdfRun64z2-w89Kk7z5cJL2IbVvSd3l8Og
+
+replacements:
+- source:
+    kind: ConfigMap
+    name: mlflow-configmap
+    fieldPath: data.DOMAIN
+  targets:
+  - select:
+      kind: Ingress
+      name: mlflow-ingress
+    fieldPaths:
+    - spec.rules.0.host
+    - spec.tls.0.hosts.0
+
+  - select:
+      kind: VirtualService
+      name: mlflow-virtual-service
+    fieldPaths:
+    - spec.http.0.route.0.headers.response.set.Access-Control-Allow-Origin
+    - spec.http.0.corsPolicy.allowOrigins.0.exact
