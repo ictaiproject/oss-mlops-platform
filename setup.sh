@@ -94,7 +94,7 @@ DISK_SPACE_GB=$(($DISK_SPACE / 1024 / 1024))
 
 # TODO: Set required depending on the deployment, ray, etc.
 
-if [[ DISK_SPACE < $RECOMMENDED_DISK_SPACE ]]; then
+if [[ $DISK_SPACE -lt $RECOMMENDED_DISK_SPACE ]]; then
     echo "WARNING: Not enough disk space detected!"
     echo "The recommended is > ${RECOMMENDED_DISK_SPACE_GB} GB of disk space. You have ${DISK_SPACE_GB} GB."
     while true; do
@@ -102,6 +102,7 @@ if [[ DISK_SPACE < $RECOMMENDED_DISK_SPACE ]]; then
         case $yn in
             [Yy]* ) break;;
             [Nn]* ) exit 1;;
+            "" ) echo "Please enter a response.";;
             * ) echo "Please answer yes or no.";;
         esac
       done
@@ -152,13 +153,10 @@ if [[ "$(uname)" == "Darwin" ]]; then
   
   bash "$SCRIPT_DIR/scripts/SSL_Details.sh"  # Using default bash because /bin/bash is an old version (3)
   bash "$SCRIPT_DIR/scripts/install_tools_mac.sh"
-  # Removed the early call to Kubernetes_ssl_configmap_creation.sh here
   
 else
   /bin/bash "$SCRIPT_DIR/scripts/SSL_Details.sh"
-  
   /bin/bash "$SCRIPT_DIR/scripts/install_tools.sh"
-  # Removed the early call to Kubernetes_ssl_configmap_creation.sh here
   
 fi
 
@@ -177,8 +175,8 @@ if kind get clusters | grep -q "^$CLUSTER_NAME$"; then
     case "$choice" in
         y|Y ) echo "Using existing kind cluster..."; break;;
         n|N ) exit 0 ;;
-        * ) echo "Invalid response. Please enter y or n." ;;
         "" ) echo "Please enter a response." ;;
+        * ) echo "Invalid response. Please enter y or n." ;;
     esac
   done
 else

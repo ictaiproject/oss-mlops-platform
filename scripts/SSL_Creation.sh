@@ -57,11 +57,12 @@ SETUP_DIR="$SCRIPT_DIR/../deployment/kubeflow/manifests/common/cert-manager/cert
 if [ ! -d "$SETUP_DIR" ]; then
     echo "ERROR: cert-manager directory not found at $SETUP_DIR"
     exit 1
-fi
+fi 
 
 echo "Applying cert-manager base resources..."
 if ! kubectl apply -k "$SETUP_DIR/base"; then
     echo "ERROR: Failed to apply cert-manager base resources"
+    echo "ERROR: Failed to apply "$SETUP_DIR/base" resources"
     exit 1
 fi
 
