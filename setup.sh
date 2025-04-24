@@ -246,7 +246,5 @@ fi
 
 echo
 echo "Installation completed!"
-echo
 
-echo "Running Kubernetes SSL configuration..."
 
