@@ -12,5 +12,5 @@ SETUP_DIR="$SCRIPT_DIR/../deployment/kubeflow/manifests/common/cert-manager/cert
 kubectl apply -k "$SETUP_DIR/base"
 if [ "$INSTALL_TYPE" = "cloud" ]; then
     kubectl apply -k "$SETUP_DIR/overlay/$SSL_PROVIDER"
-    
+    kubectl get certificaterequest --all-namespaces 
 fi

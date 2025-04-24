@@ -60,12 +60,28 @@ fi
 
 
 
-# Create config.env file
-cat > "$SCRIPT_DIR/../config.env" <<EOF
-SSL_PROVIDER=$SSL_PROVIDER
-EMAIL=$USER_EMAIL
-DOMAIN=$DOMAIN_NAME
-INSTALL_TYPE=$INSTALL_TYPE
+CONFIG_ENV="$SCRIPT_DIR/../config.env"
+
+# Add a blank line if the file is not empty and doesn't already end with one
+if [ -s "$CONFIG_ENV" ] && [ -n "$(tail -c1 "$CONFIG_ENV")" ]; then
+    echo "" >> "$CONFIG_ENV"
+fi
+
+# Function to add or update a variable in config.env
+set_config_var() {
+    local key="$1"
+    local value="$2"
+    if grep -q "^${key}=" "$CONFIG_ENV"; then
+        sed -i "s|^${key}=.*|${key}=${value}|" "$CONFIG_ENV"
+    else
+        echo "${key}=${value}" >> "$CONFIG_ENV"
+    fi
+}
+set_config_var "INSTALL_TYPE" "$INSTALL_TYPE"
+set_config_var "SSL_PROVIDER" "$SSL_PROVIDER"
+set_config_var "EMAIL" "$USER_EMAIL"
+set_config_var "DOMAIN" "$DOMAIN_NAME"
+set_config_var "INSTALL_TYPE" "$INSTALL_TYPE"
 
 EOF
 
