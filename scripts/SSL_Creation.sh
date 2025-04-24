@@ -69,7 +69,7 @@ fi
 # Apply SSL provider configuration for cloud deployments
 if [ "$INSTALL_TYPE" = "cloud" ]; then
     # Check if SSL_PROVIDER overlay exists
-    if [ ! -d "$SETUP_DIR/overlay/$SSL_PROVIDER" ]; then
+    if [ ! -d "$SCRIPT_DIR/../deployment/kubeflow/manifests/common/cert-manager/cert-manager/overlay/$SSL_PROVIDER" ]; then
         echo "ERROR: SSL provider overlay directory not found at $SETUP_DIR/overlay/$SSL_PROVIDER"
         exit 1
     fi
