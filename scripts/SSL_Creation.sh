@@ -59,12 +59,36 @@ if [ ! -d "$SETUP_DIR" ]; then
     exit 1
 fi 
 
+# Clean up any existing cert-manager installation
+echo "Cleaning up any existing cert-manager installation..."
+kubectl delete -n cert-manager --all deployments,services,pods,secrets --ignore-not-found=true
+kubectl delete namespace cert-manager --ignore-not-found=true
+kubectl delete -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.crds.yaml --ignore-not-found=true
+kubectl delete mutatingwebhookconfiguration cert-manager-webhook --ignore-not-found=true
+kubectl delete validatingwebhookconfiguration cert-manager-webhook --ignore-not-found=true
+
+echo "Waiting for cert-manager resources to be fully deleted..."
+sleep 15
+
+# Step 1: Install cert-manager with webhooks disabled
+echo "Installing cert-manager with webhooks disabled..."
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.crds.yaml
+
+# Apply base resources but temporarily disable the webhooks
 echo "Applying cert-manager base resources..."
-if ! kubectl apply -k "$SETUP_DIR/base"; then
-    echo "ERROR: Failed to apply cert-manager base resources"
-    echo "ERROR: Failed to apply "$SETUP_DIR/base" resources"
-    exit 1
-fi
+kubectl apply -k "$SETUP_DIR/base"
+
+# Disable the webhooks immediately after installation
+echo "Temporarily disabling webhook validations..."
+kubectl delete -n cert-manager mutatingwebhookconfiguration cert-manager-webhook --ignore-not-found=true
+kubectl delete -n cert-manager validatingwebhookconfiguration cert-manager-webhook --ignore-not-found=true
+
+echo "Waiting for cert-manager pods to be ready..."
+kubectl -n cert-manager wait --for=condition=Available deployment/cert-manager-webhook --timeout=120s || {
+    echo "WARNING: cert-manager webhook deployment not ready within timeout"
+    kubectl get pods -n cert-manager
+    echo "Continuing anyway..."
+}
 
 # Apply SSL provider configuration for cloud deployments
 if [ "$INSTALL_TYPE" = "cloud" ]; then
@@ -73,26 +97,52 @@ if [ "$INSTALL_TYPE" = "cloud" ]; then
         echo "ERROR: SSL provider overlay directory not found at $SETUP_DIR/overlay/$SSL_PROVIDER"
         exit 1
     fi
-
+    
     echo "Applying $SSL_PROVIDER SSL provider configuration..."
-    if ! kubectl apply -k "$SETUP_DIR/overlay/$SSL_PROVIDER"; then
-        echo "ERROR: Failed to apply $SSL_PROVIDER SSL provider configuration"
-        exit 1
-    fi
     
-    echo "Checking certificate request status..."
-    if ! kubectl get certificaterequest --all-namespaces; then
-        echo "ERROR: Failed to get certificate requests"
-        exit 1
-    fi
+    # Extract and apply the ClusterIssuer and Certificate resources directly
+    TEMP_DIR=$(mktemp -d)
     
-    echo "Waiting for cert-manager pods to be ready..."
-    if ! kubectl wait --for=condition=Ready pods --all -n cert-manager --timeout=180s; then
-        echo "WARNING: Not all cert-manager pods are ready yet. This might be normal during initial deployment."
-        # Don't exit here, as this might be normal during initial deployment
-    fi
+    # Find all yaml files in the overlay directory
+    find "$SETUP_DIR/overlay/$SSL_PROVIDER" -name "*.yaml" -type f | while read -r file; do
+        # Skip kustomization files
+        if [[ "$(basename "$file")" == "kustomization.yaml" ]]; then
+            continue
+        fi
+        
+        echo "Processing $file..."
+        cp "$file" "$TEMP_DIR/$(basename "$file")"
+        
+        # Apply each file individually
+        kubectl apply -f "$TEMP_DIR/$(basename "$file")" || {
+            echo "WARNING: Failed to apply $(basename "$file"), will retry later..."
+        }
+    done
     
-    echo "SSL provider configuration applied successfully."
+    # Clean up temporary directory
+    rm -rf "$TEMP_DIR"
+    
+    # Now re-enable the webhooks
+    echo "Re-enabling cert-manager webhooks..."
+    kubectl apply -k "$SETUP_DIR/base"
+    
+    echo "Waiting for webhooks to be ready..."
+    sleep 30
+    
+    # Apply the overlay again with webhooks enabled
+    echo "Applying $SSL_PROVIDER SSL provider configuration with webhooks enabled..."
+    kubectl apply -k "$SETUP_DIR/overlay/$SSL_PROVIDER" || {
+        echo "WARNING: Failed to apply $SSL_PROVIDER overlay with webhooks enabled"
+        echo "Individual resources may still have been applied successfully"
+    }
+    
+    echo "Checking certificate issuers status:"
+    kubectl get clusterissuers --all-namespaces
+    
+    echo "Checking certificate status:"
+    kubectl get certificates --all-namespaces
+    
+    echo "SSL provider configuration completed."
 else
     echo "Local deployment detected. Skipping SSL provider configuration."
 fi

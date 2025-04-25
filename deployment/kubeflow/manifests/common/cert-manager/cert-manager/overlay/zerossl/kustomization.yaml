@@ -5,6 +5,7 @@ kind: Kustomization
 namespace: cert-manager
 
 resources:
+- cert-manager.yaml
 - zerossl-clusterissuer.yaml
 - zerossl-certificate.yaml
 
