@@ -38,7 +38,7 @@ replacements:
   targets:
   - select:
       kind: Certificate
-      name: zerossl-cert
+      name: myapp-cert
     fieldPaths:
     - spec.dnsNames.0
 - source:
