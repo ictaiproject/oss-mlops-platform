@@ -10,7 +10,7 @@ resources:
 configMapGenerator:
 - name: cert-manager-config
   envs:
-  - ../base/config.env # or the correct relative path 
+  - config.env # or the correct relative path 
 
 replacements:
 - source:
