@@ -22,7 +22,7 @@ replacements:
   targets:
   - select:
       kind: ClusterIssuer
-      name: letsencrypt-prod
+      name: letsencrypt
     fieldPaths:
     - spec.acme.email
 

@@ -7,7 +7,7 @@ metadata:
 spec:
   secretName: myapp-cert
   issuerRef:
-    name: letsencrypt-prod
+    name: letsencrypt
     kind: ClusterIssuer
   dnsNames:
   - CERT_MANAGER_DOMAIN
