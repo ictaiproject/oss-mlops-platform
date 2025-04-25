@@ -19,6 +19,16 @@ replacements:
 - source:
     kind: ConfigMap
     name: grafana-configmap-domain
+    fieldPath: data.SSL_PROVIDER
+  targets:
+  - select:
+      kind: ClusterIssuer
+      name: grafana-ingress
+    fieldPaths:
+    - metadata.annotations.cert-manager.io/cluster-issuer
+- source:
+    kind: ConfigMap
+    name: grafana-configmap-domain
     fieldPath: data.DOMAIN
   targets:
   - select:

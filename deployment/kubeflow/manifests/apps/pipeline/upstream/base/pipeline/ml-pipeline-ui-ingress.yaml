@@ -8,7 +8,7 @@ metadata:
 
   annotations:
     kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: letsencrypt-http
+    cert-manager.io/cluster-issuer: PLACEHOLDER
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:

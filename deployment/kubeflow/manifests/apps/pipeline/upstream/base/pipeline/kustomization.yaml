@@ -63,6 +63,16 @@ replacements:
 - source:
     kind: ConfigMap
     name: ml-pipeline-ui-configmap-domain
+    fieldPath: data.SSL_PROVIDER
+  targets:
+  - select:
+      kind: ClusterIssuer
+      name: ml-pipeline-ui-ingress
+    fieldPaths:
+    - metadata.annotations.cert-manager.io/cluster-issuer
+- source:
+    kind: ConfigMap
+    name: ml-pipeline-ui-configmap-domain
     fieldPath: data.DOMAIN
   targets:
   - select:

@@ -89,8 +89,8 @@ case "$ssl_choice" in
         
         # Get ZeroSSL API token with validation
         while true; do
-            read -p "Please enter your ZeroSSL API token: " ZEROSSL_API_TOKEN
-            if [ -n "$ZEROSSL_API_TOKEN" ]; then
+            read -p "Please enter your ZeroSSL EAB HMAC KEY: " ZEROSSL_EAB_HMAC_KEY
+            if [ -n "$ZEROSSL_EAB_HMAC_KEY" ]; then
                 break
             else
                 echo "ERROR: ZeroSSL API token cannot be empty"
@@ -99,11 +99,11 @@ case "$ssl_choice" in
 
         # Get ZeroSSL Key ID with validation
         while true; do
-            read -p "Please enter your ZeroSSL Key ID: " ZEROSSL_KEY_ID
-            if [ -n "$ZEROSSL_KEY_ID" ]; then
+            read -p "Please enter your ZeroSSL Access Key ID: " ZEROSSL_ACCESS_KEY_ID
+            if [ -n "$ZEROSSL_ACCESS_KEY_ID" ]; then
                 break
             else
-                echo "ERROR: ZeroSSL Key ID cannot be empty"
+                echo "ERROR: ZeroSSL Key ID cannot be empty"ß
             fi
         done
         ;;
@@ -180,8 +180,8 @@ set_config_var "DOMAIN" "$DOMAIN_NAME" "$CONFIG_ENV"
 
 # If using ZeroSSL, add the API token and key ID
 if [ "$SSL_PROVIDER" = "zerossl" ]; then
-    set_config_var "ZEROSSL_API_TOKEN" "$ZEROSSL_API_TOKEN" "$CONFIG_ENV"
-    set_config_var "ZEROSSL_KEY_ID" "$ZEROSSL_KEY_ID" "$CONFIG_ENV"
+    set_config_var "ZEROSSL_EAB_HMAC_KEY" "$$ZEROSSL_EAB_HMAC_KEY" "$CONFIG_ENV"
+    set_config_var "ZEROSSL_ACCESS_KEY_ID" "$ZEROSSL_ACCESS_KEY_ID" "$CONFIG_ENV"
 fi
 
 # Create directory paths if they don't exist
@@ -206,8 +206,8 @@ echo "Creating config.env file at $ENV_FILE..."
     echo "EMAIL=$USER_EMAIL"
     echo "DOMAIN=$DOMAIN_NAME"
     if [ "$SSL_PROVIDER" = "zerossl" ]; then
-        echo "ZEROSSL_API_TOKEN=$ZEROSSL_API_TOKEN"
-        echo "ZEROSSL_KEY_ID=$ZEROSSL_KEY_ID"
+        echo "ZEROSSL_EAB_HMAC_KEY=$ZEROSSL_EAB_HMAC_KEY"
+        echo "ZEROSSL_ACCESS_KEY_ID=$ZEROSSL_ACCESS_KEY_ID"
     fi
 } > "$ENV_FILE" || {
     echo "ERROR: Failed to write to $ENV_FILE"
@@ -222,6 +222,7 @@ for FILE in "${TARGET_FILES[@]}"; do
     echo "Writing DOMAIN to $FILE..."
     {
         echo "DOMAIN=$DOMAIN_NAME"
+        echo "SSL_PROVIDER=$SSL_PROVIDER"
     } > "$FILE" || {
         echo "ERROR: Failed to write to $FILE"
         exit 1

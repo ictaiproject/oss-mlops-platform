@@ -24,6 +24,16 @@ replacements:
 - source:
     kind: ConfigMap
     name: prometheus-configmap-domain
+    fieldPath: data.SSL_PROVIDER
+  targets:
+  - select:
+      kind: ClusterIssuer
+      name: prometheus-ingress
+    fieldPaths:
+    - metadata.annotations.cert-manager.io/cluster-issuer
+- source:
+    kind: ConfigMap
+    name: prometheus-configmap-domain
     fieldPath: data.DOMAIN
   targets:
   - select:

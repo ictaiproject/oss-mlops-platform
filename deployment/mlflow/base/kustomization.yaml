@@ -23,6 +23,16 @@ replacements:
 - source:
     kind: ConfigMap
     name: mlflow-configmap
+    fieldPath: data.SSL_PROVIDER
+  targets:
+  - select:
+      kind: ClusterIssuer
+      name: mlflow-ingress
+    fieldPaths:
+    - metadata.annotations.cert-manager.io/cluster-issuer
+- source:
+    kind: ConfigMap
+    name: mlflow-configmap
     fieldPath: data.DOMAIN
   targets:
   - select:
