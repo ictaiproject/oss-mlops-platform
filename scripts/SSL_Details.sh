@@ -67,9 +67,12 @@ if [ "$INSTALL_TYPE" = "local" ]; then
 fi
 
 # For cloud installations, run the hostname finding script
+echo "$SCRIPT_DIR/Finding_Hostname.sh"
 if [ -x "$SCRIPT_DIR/Finding_Hostname.sh" ]; then
+    chmod +x "$SCRIPT_DIR/Finding_Hostname.sh"
+
     echo "Running hostname detection script..."
-    bash "$SCRIPT_DIR/Finding_Hostname.sh"
+    /bin/bash "$SCRIPT_DIR/Finding_Hostname.sh"
 else
     echo "ERROR: Finding_Hostname.sh script not found or not executable"
     exit 1
@@ -145,9 +148,7 @@ set_config_var() {
     # Add the new definition
     echo "${key}=${value}" >> "$file"
 }
-if [ "$INSTALL_TYPE" = "cloud" ]; then
-    /bin/bash "$SCRIPT_DIR/Finding_Hostname.sh"
-fi
+
 
 
 # Set the configuration variables
@@ -187,7 +188,8 @@ echo "Creating config.env file at $ENV_FILE..."
 }
 
 echo "SSL configuration completed successfully and saved to config files."
-exit 0#!/bin/bash
+exit 0
+#!/bin/bash
 
 # Exit on error, but handle errors properly
 set -o errexit
