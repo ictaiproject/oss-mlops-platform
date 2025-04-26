@@ -72,7 +72,7 @@ TARGET_FILES=("$MLFLOW_FILE" "$KUBEFLOW_FILE" "$GRAFANA_FILE" "$PROMETHEUS_FILE"
 for FILE in "${TARGET_FILES[@]}"; do
     echo "Writing DOMAIN to $FILE..."
     {
-        echo ""
+        echo "DOMAIN=$DOMAIN"
     } > "$FILE" || {
         echo "ERROR: Failed to write to $FILE"
         exit 1
