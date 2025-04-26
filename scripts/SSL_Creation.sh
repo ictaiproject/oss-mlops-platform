@@ -59,6 +59,7 @@ if [ ! -d "$SETUP_DIR" ]; then
     exit 1
 fi 
 
+
 # Clean up any existing cert-manager installation
 echo "Cleaning up any existing cert-manager installation..."
 kubectl delete -n cert-manager --all deployments,services,pods,secrets --ignore-not-found=true
