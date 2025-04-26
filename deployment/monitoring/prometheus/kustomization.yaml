@@ -27,7 +27,7 @@ replacements:
     fieldPath: data.SSL_PROVIDER
   targets:
   - select:
-      kind: ClusterIssuer
+      kind: Ingress
       name: prometheus-ingress
     fieldPaths:
     - metadata.annotations.cert-manager.io/cluster-issuer
