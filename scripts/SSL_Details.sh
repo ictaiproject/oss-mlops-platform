@@ -111,9 +111,9 @@ esac
 
 # Get email with validation
 while true; do
-    read -p "Please enter your email address: " USER_EMAIL
-    if [ -n "$USER_EMAIL" ]; then
-        if validate_email "$USER_EMAIL"; then
+    read -p "Please enter your email address: " EMAIL
+    if [ -n "$EMAIL" ]; then
+        if validate_email "$EMAIL"; then
             break
         fi
     else
@@ -167,7 +167,7 @@ set_config_var() {
 # Set the configuration variables
 set_config_var "INSTALL_TYPE" "$INSTALL_TYPE" "$CONFIG_ENV"
 set_config_var "SSL_PROVIDER" "$SSL_PROVIDER" "$CONFIG_ENV"
-set_config_var "EMAIL" "$USER_EMAIL" "$CONFIG_ENV"
+set_config_var "EMAIL" "$EMAIL" "$CONFIG_ENV"
 
 
 # If using ZeroSSL, add the API token and key ID
@@ -196,7 +196,7 @@ echo "Creating config.env file at $ENV_FILE..."
 mkdir -p "$(dirname "$ENV_FILE")"
 {
     echo "SSL_PROVIDER=$SSL_PROVIDER"
-    echo "EMAIL=$USER_EMAIL"
+    echo "EMAIL=$EMAIL"
     if [ "$SSL_PROVIDER" = "zerossl" ]; then
         echo "ZEROSSL_EAB_HMAC_KEY=$ZEROSSL_EAB_HMAC_KEY"
         echo "ZEROSSL_ACCESS_KEY_ID=$ZEROSSL_ACCESS_KEY_ID"
