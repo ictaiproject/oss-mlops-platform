@@ -38,7 +38,7 @@ DOMAIN=$(dig +short -x "$IP_ADDRESS")
 
 # Remove any trailing dot
 DOMAIN=${DOMAIN%.}
-
+ echo "SSL_PROVIDER=$SSL_PROVIDER"
 # Validate domain or fallback
 if [ -z "$DOMAIN" ]; then
     echo "WARNING: No hostname found for IP. Using IP as domain."
