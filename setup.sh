@@ -188,6 +188,7 @@ kubectl cluster-info --context kind-$CLUSTER_NAME
 
 
 if [ "$INSTALL_TYPE" = "cloud" ]; then
+    chmod +x "$SCRIPT_DIR/scripts/SSL_Creation.sh"
     /bin/bash "$SCRIPT_DIR/scripts/SSL_Creation.sh"
 fi
 
