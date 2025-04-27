@@ -176,12 +176,8 @@ if [ "$SSL_PROVIDER" = "zerossl" ]; then
     set_config_var "ZEROSSL_ACCESS_KEY_ID" "$ZEROSSL_ACCESS_KEY_ID" "$CONFIG_ENV"
 fi
 
-# Create directory paths if they don't exist
-mkdir -p "$SCRIPT_DIR/../deployment/kubeflow/manifests/common/cert-manager/cert-manager/base"
-mkdir -p "$SCRIPT_DIR/../deployment/mlflow/base"
-mkdir -p "$SCRIPT_DIR/../deployment/kubeflow/manifests/apps/pipeline/upstream/base/pipeline"
-mkdir -p "$SCRIPT_DIR/../deployment/monitoring/grafana"
-mkdir -p "$SCRIPT_DIR/../deployment/monitoring/prometheus"
+
+
 
 # Define the config file paths
 ENV_FILE="$SCRIPT_DIR/../deployment/kubeflow/manifests/common/cert-manager/cert-manager/overlay/$SSL_PROVIDER/config.env"
@@ -215,6 +211,7 @@ for FILE in "${TARGET_FILES[@]}"; do
     mkdir -p "$(dirname "$FILE")"
     {
          echo "SSL_PROVIDER=$SSL_PROVIDER"
+         echo "EMAIL=$EMAIL"
     } > "$FILE" || {
         echo "ERROR: Failed to write to $FILE"
         exit 1
