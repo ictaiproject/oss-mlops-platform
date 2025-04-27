@@ -20,6 +20,7 @@ secretGenerator:
   - DB_PASSWORD=KFSg-AYoiPdfRun64z2-w89Kk7z5cJL2IbVvSd3l8Og
 
 replacements:
+# Remove or comment out this block if not needed
 - source:
     kind: ConfigMap
     name: mlflow-configmap

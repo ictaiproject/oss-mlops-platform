@@ -16,6 +16,7 @@ configMapGenerator:
   - config.env
 
 replacements:
+# Remove or comment out this block if not needed
 - source:
     kind: ConfigMap
     name: grafana-configmap-domain
