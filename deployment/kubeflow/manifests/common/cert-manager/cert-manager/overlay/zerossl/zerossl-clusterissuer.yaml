@@ -7,29 +7,16 @@ spec:
   acme:
     # ZeroSSL ACME server
     server: https://acme.zerossl.com/v2/DV90
-    email: EMAIL
-
-    # name of a secret used to store the ACME account private key
+    email: your@email.com
     privateKeySecretRef:
       name: zerossl-prod
-
-    # for each cert-manager new EAB credencials are required
     externalAccountBinding:
-      keyID: PLACEHOLDER
+      keyID: YOUR_EAB_KID
       keySecretRef:
-        name: zero-ssl-eabsecret
-        key: secret
+        name: zerossl-api-secret
+        key: eab_hmac_key
       keyAlgorithm: HS256
-
-    # ACME DNS-01 provider configurations to verify domain
     solvers:
-    - selector: {}
-      dns01:
-        route53:
-          region: us-west-2
-          # optional if ambient credentials are available; see ambient credentials documentation
-          # see Route53 for >0 issue "letsencrypt.org" and change to >0 issue "sectigo.com"
-          accessKeyID: ACCESS_KEY_ID
-          secretAccessKeySecretRef:
-            name: route53-credentials-secret
-            key: secret-access-key
+    - http01:
+        ingress:
+          class: nginx

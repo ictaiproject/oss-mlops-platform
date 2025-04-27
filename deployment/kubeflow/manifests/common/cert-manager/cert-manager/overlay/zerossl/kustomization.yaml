@@ -1,18 +1,16 @@
-# zerossl/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 namespace: cert-manager
 
 resources:
-- cert-manager.yaml
 - zerossl-clusterissuer.yaml
 - zerossl-certificate.yaml
 
 secretGenerator:
 - name: zerossl-api-secret
   literals:
-  - eab_hmac-key=${ZEROSSL_EAB_HMAC_KEY}
+  - eab_hmac_key=${ZEROSSL_EAB_HMAC_KEY}
 
 configMapGenerator:
 - name: cert-manager-config
@@ -27,7 +25,7 @@ replacements:
   targets:
   - select:
       kind: ClusterIssuer
-      name: zerossl-prod
+      name: zerossl
     fieldPaths:
     - spec.acme.email
 
@@ -41,16 +39,7 @@ replacements:
       name: myapp-cert
     fieldPaths:
     - spec.dnsNames.0
-- source:
-    kind: ConfigMap
-    name: cert-manager-config
-    fieldPath: data.SSL_PROVIDER
-  targets:
-  - select:
-      kind: ClusterIssuer
-      name: zerossl-prod
-    fieldPaths:
-    - metadata.annotations.cert-manager.io/cluster-issuer
+
 - source:
     kind: ConfigMap
     name: cert-manager-config
@@ -61,14 +50,3 @@ replacements:
       name: zerossl
     fieldPaths:
     - spec.acme.externalAccountBinding.keyID
-
-- source:
-    kind: Secret
-    name: zerossl-api-secret
-    fieldPath: data.eab_hmac-key
-  targets:
-  - select:
-      kind: ClusterIssuer
-      name: zerossl
-    fieldPaths:
-    - spec.acme.solvers.0.dns01.route53.accessKeyID
