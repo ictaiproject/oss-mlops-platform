@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Function to check and install required tools
 ensure_tool_installed() {
     local tool="$1"
@@ -17,10 +19,12 @@ ensure_tool_installed() {
     fi
 }
 
+# Define script directory
+SCRIPT_DIR=$(dirname "$(readlink -f "$0" 2>/dev/null || echo "$0")")
 
+# Make sure necessary tools are installed
 ensure_tool_installed curl
 ensure_tool_installed dig
-
 
 # Automatically detect public IP address
 echo "Detecting public IP address..."
@@ -38,45 +42,67 @@ DOMAIN=$(dig +short -x "$IP_ADDRESS")
 
 # Remove any trailing dot
 DOMAIN=${DOMAIN%.}
- echo "SSL_PROVIDER=$SSL_PROVIDER"
+
+# Get SSL_PROVIDER from config.env if it exists
+CONFIG_ENV="$SCRIPT_DIR/../config.env"
+if [ -f "$CONFIG_ENV" ]; then
+    source "$CONFIG_ENV"
+    echo "SSL_PROVIDER=$SSL_PROVIDER"
+fi
+
 # Validate domain or fallback
 if [ -z "$DOMAIN" ]; then
     echo "WARNING: No hostname found for IP. Using IP as domain."
     DOMAIN="$IP_ADDRESS"
 fi
 
-
 echo "Using domain: $DOMAIN"
 
+# Define target files
 ENV_FILE="$SCRIPT_DIR/../deployment/kubeflow/manifests/common/cert-manager/cert-manager/overlay/$SSL_PROVIDER/config.env"
-
 MLFLOW_FILE="$SCRIPT_DIR/../deployment/mlflow/base/config.env"
 KUBEFLOW_FILE="$SCRIPT_DIR/../deployment/kubeflow/manifests/apps/pipeline/upstream/base/pipeline/config.env"
 GRAFANA_FILE="$SCRIPT_DIR/../deployment/monitoring/grafana/config.env"
 PROMETHEUS_FILE="$SCRIPT_DIR/../deployment/monitoring/prometheus/config.env"
 
-# Create the cert-manager config file
-echo "Creating config.env file at $ENV_FILE..."
-{
-    echo "DOMAIN=$DOMAIN"
+TARGET_FILES=("$ENV_FILE" "$MLFLOW_FILE" "$KUBEFLOW_FILE" "$GRAFANA_FILE" "$PROMETHEUS_FILE")
+
+# Function to add or update a variable in config file
+update_config_var() {
+    local file="$1"
+    local key="$2"
+    local value="$3"
     
-} > "$ENV_FILE" || {
-    echo "ERROR: Failed to write to $ENV_FILE"
-    exit 1
+    # Create directory if it doesn't exist
+    mkdir -p "$(dirname "$file")"
+    
+    # Create the file if it doesn't exist
+    if [ ! -f "$file" ]; then
+        echo "${key}=${value}" > "$file"
+        echo "Created $file with $key=$value."
+        return
+    fi
+    
+    # Check if the key already exists in the file
+    if grep -q "^${key}=" "$file"; then
+        # Update existing key - use temp file for compatibility with BSD and GNU sed
+        local tmpfile=$(mktemp)
+        grep -v "^${key}=" "$file" > "$tmpfile"
+        echo "${key}=${value}" >> "$tmpfile"
+        mv "$tmpfile" "$file"
+        echo "Updated $key in $file."
+    else
+        # Add a blank line if file is not empty and doesn't end with one
+        if [ -s "$file" ] && [ -n "$(tail -c1 "$file")" ]; then
+            echo "" >> "$file"
+        fi
+        # Append the new key-value pair
+        echo "${key}=${value}" >> "$file"
+        echo "Appended $key to $file."
+    fi
 }
 
-# Define an array of target files
-TARGET_FILES=("$MLFLOW_FILE" "$KUBEFLOW_FILE" "$GRAFANA_FILE" "$PROMETHEUS_FILE")
-
-# Write the DOMAIN to each target file
+# Update domain in all target files
 for FILE in "${TARGET_FILES[@]}"; do
-    echo "Writing DOMAIN to $FILE..."
-    {
-        echo "DOMAIN=$DOMAIN"
-    } > "$FILE" || {
-        echo "ERROR: Failed to write to $FILE"
-        exit 1
-    }
+    update_config_var "$FILE" "DOMAIN" "$DOMAIN"
 done
-
-

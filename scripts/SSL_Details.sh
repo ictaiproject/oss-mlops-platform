@@ -15,8 +15,8 @@ handle_error() {
 # Set up the error trap
 trap 'handle_error $? $LINENO' ERR
 
-# Determine the directory of the script
-SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
+# Determine the directory of the script - handle both Linux and macOS
+SCRIPT_DIR=$(dirname "$(readlink -f "$0" 2>/dev/null || echo "$0")")
 
 # Function to validate email addresses
 validate_email() {
@@ -28,8 +28,40 @@ validate_email() {
     return 0
 }
 
-
-
+# Function to add or update a variable in config file
+update_config_var() {
+    local file="$1"
+    local key="$2"
+    local value="$3"
+    
+    # Create directory if it doesn't exist
+    mkdir -p "$(dirname "$file")"
+    
+    # Create the file if it doesn't exist
+    if [ ! -f "$file" ]; then
+        echo "${key}=${value}" > "$file"
+        echo "Created $file with $key=$value."
+        return
+    fi
+    
+    # Check if the key already exists in the file
+    if grep -q "^${key}=" "$file"; then
+        # Update existing key - use temp file for compatibility with BSD and GNU sed
+        local tmpfile=$(mktemp)
+        grep -v "^${key}=" "$file" > "$tmpfile"
+        echo "${key}=${value}" >> "$tmpfile"
+        mv "$tmpfile" "$file"
+        echo "Updated $key in $file."
+    else
+        # Add a blank line if file is not empty and doesn't end with one
+        if [ -s "$file" ] && [ -n "$(tail -c1 "$file")" ]; then
+            echo "" >> "$file"
+        fi
+        # Append the new key-value pair
+        echo "${key}=${value}" >> "$file"
+        echo "Appended $key to $file."
+    fi
+}
 
 # Ask user for installation type
 while true; do
@@ -43,26 +75,15 @@ while true; do
     fi
 done
 
+# Define the config.env file path
+CONFIG_ENV="$SCRIPT_DIR/../config.env"
+
 # Exit early if local installation
 if [ "$INSTALL_TYPE" = "local" ]; then
     echo "You have chosen to install on a local machine. No SSL configuration is required."
     
-    # Still need to create a minimal config
-    CONFIG_ENV="$SCRIPT_DIR/../config.env"
-    
-    # Create or append to the config file
-    if [ -f "$CONFIG_ENV" ]; then
-        # Add a blank line if the file is not empty and doesn't already end with one
-        if [ -s "$CONFIG_ENV" ] && [ -n "$(tail -c1 "$CONFIG_ENV")" ]; then
-            echo "" >> "$CONFIG_ENV"
-        fi
-    else
-        # Create the file if it doesn't exist
-        touch "$CONFIG_ENV"
-    fi
-    
-    # Add the installation type to config
-    echo "INSTALL_TYPE=local" >> "$CONFIG_ENV"
+    # Update the configuration file
+    update_config_var "$CONFIG_ENV" "INSTALL_TYPE" "local"
     
     echo "Local configuration saved to $CONFIG_ENV"
     echo "Exiting SSL configuration script."
@@ -121,6 +142,41 @@ while true; do
     fi
 done
 
+# Update the main config.env file
+update_config_var "$CONFIG_ENV" "INSTALL_TYPE" "$INSTALL_TYPE"
+update_config_var "$CONFIG_ENV" "SSL_PROVIDER" "$SSL_PROVIDER"
+update_config_var "$CONFIG_ENV" "EMAIL" "$EMAIL"
+
+# If using ZeroSSL, add the API token and key ID
+if [ "$SSL_PROVIDER" = "zerossl" ]; then
+    update_config_var "$CONFIG_ENV" "ZEROSSL_EAB_HMAC_KEY" "$ZEROSSL_EAB_HMAC_KEY"
+    update_config_var "$CONFIG_ENV" "ZEROSSL_ACCESS_KEY_ID" "$ZEROSSL_ACCESS_KEY_ID"
+fi
+
+# Define the config file paths
+ENV_FILE="$SCRIPT_DIR/../deployment/kubeflow/manifests/common/cert-manager/cert-manager/overlay/$SSL_PROVIDER/config.env"
+MLFLOW_FILE="$SCRIPT_DIR/../deployment/mlflow/base/config.env"
+KUBEFLOW_FILE="$SCRIPT_DIR/../deployment/kubeflow/manifests/apps/pipeline/upstream/base/pipeline/config.env"
+GRAFANA_FILE="$SCRIPT_DIR/../deployment/monitoring/grafana/config.env"
+PROMETHEUS_FILE="$SCRIPT_DIR/../deployment/monitoring/prometheus/config.env"
+
+# Create/update the cert-manager config file
+update_config_var "$ENV_FILE" "SSL_PROVIDER" "$SSL_PROVIDER"
+update_config_var "$ENV_FILE" "EMAIL" "$EMAIL"
+if [ "$SSL_PROVIDER" = "zerossl" ]; then
+    update_config_var "$ENV_FILE" "ZEROSSL_EAB_HMAC_KEY" "$ZEROSSL_EAB_HMAC_KEY"
+    update_config_var "$ENV_FILE" "ZEROSSL_ACCESS_KEY_ID" "$ZEROSSL_ACCESS_KEY_ID"
+fi
+
+# Define an array of target files
+TARGET_FILES=("$MLFLOW_FILE" "$KUBEFLOW_FILE" "$GRAFANA_FILE" "$PROMETHEUS_FILE")
+
+# Write the SSL_PROVIDER and EMAIL to each target file
+for FILE in "${TARGET_FILES[@]}"; do
+    update_config_var "$FILE" "SSL_PROVIDER" "$SSL_PROVIDER"
+    update_config_var "$FILE" "EMAIL" "$EMAIL"
+done
+
 # For cloud installations, run the hostname finding script
 if [ -f "$SCRIPT_DIR/Finding_Hostname.sh" ]; then
     echo "Running hostname detection script..."
@@ -130,93 +186,6 @@ else
     echo "ERROR: Finding_Hostname.sh script not found"
     exit 1
 fi
-
-
-# Define the config.env file path
-CONFIG_ENV="$SCRIPT_DIR/../config.env"
-
-# Create or append to the config file
-if [ -f "$CONFIG_ENV" ]; then
-    # Add a blank line if the file is not empty and doesn't already end with one
-    if [ -s "$CONFIG_ENV" ] && [ -n "$(tail -c1 "$CONFIG_ENV")" ]; then
-        echo "" >> "$CONFIG_ENV"
-    fi
-else
-    # Create the file if it doesn't exist
-    touch "$CONFIG_ENV"
-fi
-
-# Function to add or update a variable in config.env
-set_config_var() {
-    local key="$1"
-    local value="$2"
-    local file="$3"
-    
-    # Remove any existing definition
-    if grep -q "^${key}=" "$file"; then
-        # Use a temporary file to avoid issues with in-place editing
-        local tmpfile=$(mktemp)
-        grep -v "^${key}=" "$file" > "$tmpfile"
-        mv "$tmpfile" "$file"
-    fi
-    
-    # Add the new definition
-    echo "${key}=${value}" >> "$file"
-}
-
-# Set the configuration variables
-set_config_var "INSTALL_TYPE" "$INSTALL_TYPE" "$CONFIG_ENV"
-set_config_var "SSL_PROVIDER" "$SSL_PROVIDER" "$CONFIG_ENV"
-set_config_var "EMAIL" "$EMAIL" "$CONFIG_ENV"
-
-
-# If using ZeroSSL, add the API token and key ID
-if [ "$SSL_PROVIDER" = "zerossl" ]; then
-    set_config_var "ZEROSSL_EAB_HMAC_KEY" "$ZEROSSL_EAB_HMAC_KEY" "$CONFIG_ENV"
-    set_config_var "ZEROSSL_ACCESS_KEY_ID" "$ZEROSSL_ACCESS_KEY_ID" "$CONFIG_ENV"
-fi
-
-
-
-
-# Define the config file paths
-ENV_FILE="$SCRIPT_DIR/../deployment/kubeflow/manifests/common/cert-manager/cert-manager/overlay/$SSL_PROVIDER/config.env"
-
-MLFLOW_FILE="$SCRIPT_DIR/../deployment/mlflow/base/config.env"
-KUBEFLOW_FILE="$SCRIPT_DIR/../deployment/kubeflow/manifests/apps/pipeline/upstream/base/pipeline/config.env"
-GRAFANA_FILE="$SCRIPT_DIR/../deployment/monitoring/grafana/config.env"
-PROMETHEUS_FILE="$SCRIPT_DIR/../deployment/monitoring/prometheus/config.env"
-
-# Create the cert-manager config file
-echo "Creating config.env file at $ENV_FILE..."
-mkdir -p "$(dirname "$ENV_FILE")"
-{
-    echo "SSL_PROVIDER=$SSL_PROVIDER"
-    echo "EMAIL=$EMAIL"
-    if [ "$SSL_PROVIDER" = "zerossl" ]; then
-        echo "ZEROSSL_EAB_HMAC_KEY=$ZEROSSL_EAB_HMAC_KEY"
-        echo "ZEROSSL_ACCESS_KEY_ID=$ZEROSSL_ACCESS_KEY_ID"
-    fi
-} > "$ENV_FILE" || {
-    echo "ERROR: Failed to write to $ENV_FILE"
-    exit 1
-}
-
-# Define an array of target files
-TARGET_FILES=("$MLFLOW_FILE" "$KUBEFLOW_FILE" "$GRAFANA_FILE" "$PROMETHEUS_FILE")
-
-# Write the DOMAIN to each target file
-for FILE in "${TARGET_FILES[@]}"; do
-    echo "Writing DOMAIN to $FILE..."
-    mkdir -p "$(dirname "$FILE")"
-    {
-         echo "SSL_PROVIDER=$SSL_PROVIDER"
-         echo "EMAIL=$EMAIL"
-    } > "$FILE" || {
-        echo "ERROR: Failed to write to $FILE"
-        exit 1
-    }
-done
 
 echo "SSL configuration completed successfully and saved to config files."
 exit 0
