@@ -30,7 +30,7 @@ replacements:
       kind: Ingress
       name: mlflow-ingress
     fieldPaths:
-    - metadata.annotations.cert-manager.io/cluster-issuer
+    - metadata.annotations.[cert-manager.io/cluster-issuer]
 
 - source:
     kind: ConfigMap

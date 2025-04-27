@@ -30,7 +30,7 @@ replacements:
       kind: Ingress
       name: prometheus-ingress
     fieldPaths:
-    - metadata.annotations.cert-manager.io/cluster-issuer
+    - metadata.annotations.[cert-manager.io/cluster-issuer]
 - source:
     kind: ConfigMap
     name: prometheus-configmap-domain
