@@ -136,6 +136,8 @@ if [ "$INSTALL_LOCAL_REGISTRY" = "true" ]; then
     fi
 fi
 
+rm -rf "$PLATFORM_DIR"
+
 # Define config files to delete
 ENV_FILE="$SCRIPT_DIR/deployment/kubeflow/manifests/common/cert-manager/cert-manager/overlay/$SSL_PROVIDER/config.env"
 MLFLOW_FILE="$SCRIPT_DIR/deployment/mlflow/base/config.env"

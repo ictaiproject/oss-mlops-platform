@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Exit on error, but handle errors properly
-
+set -o errexit
 set -o pipefail
 
 # Function for error handling

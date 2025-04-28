@@ -154,6 +154,7 @@ if [ "$SSL_PROVIDER" = "zerossl" ]; then
 fi
 
 # Define the config file paths
+
 ENV_FILE="$SCRIPT_DIR/../deployment/kubeflow/manifests/common/cert-manager/cert-manager/overlay/$SSL_PROVIDER/config.env"
 MLFLOW_FILE="$SCRIPT_DIR/../deployment/mlflow/base/config.env"
 KUBEFLOW_FILE="$SCRIPT_DIR/../deployment/kubeflow/manifests/apps/pipeline/upstream/base/pipeline/config.env"

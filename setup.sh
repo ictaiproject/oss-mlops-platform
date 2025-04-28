@@ -160,6 +160,13 @@ else
   
 fi
 
+
+# Updating the source file after the SSL details have been set
+cp "$SCRIPT_DIR/config.env" $PLATFORM_CONFIG
+
+
+source $PLATFORM_CONFIG
+
 # CREATE CLUSTER
 function fail {
     printf "If the previous error is caused because the cluster already exists, you can deleted it with the following command: kind delete cluster --name $CLUSTER_NAME \n" "$1" >&2
@@ -184,13 +191,12 @@ else
     /bin/bash "$SCRIPT_DIR/scripts/create_cluster.sh"
 fi
 
+
+/bin/bash "$SCRIPT_DIR/scripts/SSL_Creation.sh"
+
+
 kubectl cluster-info --context kind-$CLUSTER_NAME
 
-
-if [ "$INSTALL_TYPE" = "cloud" ]; then
-    chmod +x "$SCRIPT_DIR/scripts/SSL_Creation.sh"
-    /bin/bash "$SCRIPT_DIR/scripts/SSL_Creation.sh"
-fi
 
 # DEPLOY LOCAL DOCKER REGISTRY
 if [ "$INSTALL_LOCAL_REGISTRY" = true ]; then
@@ -245,5 +251,3 @@ fi
 
 echo
 echo "Installation completed!"
-
-
