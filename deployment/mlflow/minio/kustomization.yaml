@@ -7,4 +7,5 @@ resources:
 - minio-pvc.yaml
 - minio-deployment.yaml
 - minio-service.yaml
-- minio-ingress.yaml
+
+#- minio-ingress.yaml
