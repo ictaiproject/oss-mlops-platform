@@ -4,6 +4,9 @@ metadata:
   name: prometheus-deployment
   namespace: monitoring
 spec:
+  selector:
+    matchLabels:
+      app: prometheus
   template:
     spec:
       containers:
@@ -12,7 +15,7 @@ spec:
             - "--config.file=/etc/prometheus/prometheus.yml"
             - "--storage.tsdb.path=/prometheus/"
             - '--storage.tsdb.retention.time=15d'
-            - "--web.external-url=/prometheus"
+            - "--web.external-url=https://mlops.local/prometheus"
             - "--web.route-prefix=/"
           volumeMounts:
             - name: prometheus-config-volume

@@ -1,10 +1,11 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: mlflow-minio-ingress
+  name: minio-ingress
+  namespace: mlflow
   annotations:
     kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.il/add-base-url: "true"
+    cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
 sspec:
   tls:

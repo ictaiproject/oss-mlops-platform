@@ -2,9 +2,15 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: minio-config
-  namespace: mlflow
+  namespace: default
 data:
-  MINIO_BROWSER: "on"
-  MINIO_ACCESS_KEY: "your-access-key"
-  MINIO_SECRET_KEY: "your-secret-key"
-  MINIO_BROWSER_REDIRECT_URL: "https://mlops.local/minio/"
+  # Reference to environment variable files
+  config.env: |
+    # Configuration environment file content
+    MINIO_ROOT_USER=minioadmin
+    MINIO_ROOT_PASSWORD=minioadmin
+  secret.env: |
+    # Secret environment file content
+    MINIO_SECRET_KEY=minioadmin
+    MINIO_ACCESS_KEY=minioadmin
+    MINIO_BROWSER_REDIRECT_URL: "https://mlops.local/minio/"
