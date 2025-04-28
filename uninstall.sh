@@ -158,6 +158,8 @@ if [ -d "$PLATFORM_DIR" ]; then
     fi
 fi
 
+
+
 # Clean up any lingering docker images (optional)
 if command -v docker &> /dev/null; then
     echo "Checking for lingering Docker resources..."
@@ -184,6 +186,18 @@ if command -v docker &> /dev/null; then
         fi
     fi
 fi
+
+
+
+TMP_FILE="$(mktemp)"
+echo $SCRIPT_ENV/config.env
+# Only keep the two specified lines
+grep -E '^HOST_IP="127\.0\.0\.1"$|^CLUSTER_NAME="mlops-platform"$' "./config.env" > "$TMP_FILE"
+
+# Overwrite the original file
+mv "$TMP_FILE" "./config.env"
+
+echo "Cleaned $SCRIPT_ENV, only HOST_IP and CLUSTER_NAME remain."
 
 echo "The platform has been successfully uninstalled."
 echo "If you want to reinstall, run ./setup.sh"
