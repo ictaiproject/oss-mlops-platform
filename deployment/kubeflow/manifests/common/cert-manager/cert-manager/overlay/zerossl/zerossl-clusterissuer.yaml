@@ -14,7 +14,7 @@ spec:
       keyID: YOUR_EAB_KID # This will be replaced by the value from ZEROSSL_ACCESS_KEY_ID in config.env
       keySecretRef:
         name: zerossl-api-secret
-        key: eab_hmac_key
+        key: ZEROSSL_EAB_HMAC_KEY
       keyAlgorithm: HS256
     solvers:
     - http01:
