@@ -192,8 +192,9 @@ else
 fi
 
 
-if [ "$INSTALL_TYPE" = "local" ]; then
-    echo "You have chosen to install on a local machine. No SSL configuration is required."
+
+if [ "$INSTALL_TYPE" = "cloud" ]; then
+    echo "You have choose to install it on the cloud "
     /bin/bash "$SCRIPT_DIR/scripts/SSL_Creation.sh"
    
 fi

@@ -150,15 +150,16 @@ TARGET_FILES=("$ENV_FILE" "$MLFLOW_FILE" "$KUBEFLOW_FILE" "$GRAFANA_FILE" "$PROM
 
 # Delete configuration files
 echo "Cleaning up configuration files..."
-safely_delete_files "${TARGET_FILES[@]}"
 
-# Clean up platform directory
-if [ -d "$PLATFORM_DIR" ]; then
-    echo "Removing platform directory..."
-    if ! rm -rf "$PLATFORM_DIR"; then
-        echo "WARNING: Failed to remove $PLATFORM_DIR"
+
+# Empty configuration files instead of deleting them
+echo "Emptying configuration files..."
+for file in "${TARGET_FILES[@]}"; do
+    if [ -f "$file" ]; then
+        : > "$file"
+        echo "Emptied $file"
     fi
-fi
+done
 
 
 
