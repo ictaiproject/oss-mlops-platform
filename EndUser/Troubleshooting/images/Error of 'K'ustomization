@@ -1,0 +1,2 @@
+We have a Kustomization.yaml file (capital K).
+But the Kubernetes/kustomize CLI doesn’t recognize the Kustomization resource kind 
