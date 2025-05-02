@@ -18,7 +18,6 @@ trap 'handle_error $? $LINENO' ERR
 # Script location detection
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 PLATFORM_DIR="$SCRIPT_DIR/../.platform"
-mkdir -p "$PLATFORM_DIR"
 PLATFORM_CONFIG="$PLATFORM_DIR/.config"
 
 # First check if config.env exists
