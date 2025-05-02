@@ -147,5 +147,11 @@ else
     echo "Local deployment detected. Skipping SSL provider configuration."
 fi
 
+
+kubectl create secret generic zerossl-eab-secret \
+    --namespace cert-manager \
+    --from-literal=secret="YOUR_ZEROSSL_EAB_HMAC_KEY_HERE"
+
+
 echo "SSL creation completed successfully."
 exit 0
