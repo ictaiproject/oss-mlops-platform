@@ -151,6 +151,9 @@ update_config_var "$CONFIG_ENV" "EMAIL" "$EMAIL"
 if [ "$SSL_PROVIDER" = "zerossl" ]; then
     update_config_var "$CONFIG_ENV" "ZEROSSL_EAB_HMAC_KEY" "$ZEROSSL_EAB_HMAC_KEY"
     update_config_var "$CONFIG_ENV" "ZEROSSL_ACCESS_KEY_ID" "$ZEROSSL_ACCESS_KEY_ID"
+    kubectl create secret generic zerossl-eab-secret \
+    --namespace cert-manager \
+    --from-literal=secret="YOUR_ZEROSSL_EAB_HMAC_KEY_HERE"
 fi
 
 # Define the config file paths
