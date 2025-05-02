@@ -13,8 +13,8 @@ spec:
     externalAccountBinding:
       keyID: YOUR_EAB_KID # This will be replaced by the value from ZEROSSL_ACCESS_KEY_ID in config.env
       keySecretRef:
-        name: zerossl-api-secret
-        key: ZEROSSL_EAB_HMAC_KEY
+        name: zerossl-eab-secret # Must match the name in secretGenerator
+        key: secret # Key within the secret that contains the HMAC value
       keyAlgorithm: HS256
     solvers:
     - http01:

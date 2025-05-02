@@ -1,4 +1,3 @@
-# zerossl/certificate.yaml
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -11,3 +10,6 @@ spec:
     kind: ClusterIssuer
   dnsNames:
   - example.com # This will be replaced by the value from DOMAIN in config.env
+  # Ensure certificate is renewed before expiry
+  renewBefore: 720h # 30 days
+  duration: 2160h # 90 days
