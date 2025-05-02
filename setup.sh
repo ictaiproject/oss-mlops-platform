@@ -192,7 +192,12 @@ else
 fi
 
 
-/bin/bash "$SCRIPT_DIR/scripts/SSL_Creation.sh"
+if [ "$INSTALL_TYPE" = "local" ]; then
+    echo "You have chosen to install on a local machine. No SSL configuration is required."
+    /bin/bash "$SCRIPT_DIR/scripts/SSL_Creation.sh"
+   
+fi
+
 
 
 kubectl cluster-info --context kind-$CLUSTER_NAME
