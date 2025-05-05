@@ -8,7 +8,7 @@ resources:
 - prometheus-service.yaml
 - prometheus-pvc.yaml
 - prometheus-ingress.yaml
-- prometheus-virtualservice.yaml
+## - prometheus-virtualservice.yaml
 
 configMapGenerator:
 - name: prometheus-configmap-domain

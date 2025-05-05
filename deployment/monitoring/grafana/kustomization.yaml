@@ -8,7 +8,7 @@ resources:
 - dashboards-config-map.yaml
 - dashboards-json-config-map.yaml
 - grafana-ingress.yaml
-- grafana-virtualservice.yaml
+## - grafana-virtualservice.yaml
 
 configMapGenerator:
 - name: grafana-configmap-domain
